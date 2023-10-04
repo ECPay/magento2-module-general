@@ -7,7 +7,8 @@
         "AFL-3.0"
     ],
     "require": {
-        "php": "~8.2.0",
+        "php": "~8.1.0",
+        "magento/framework": "103.0.5-p3",
         "ecpay/sdk": "^1.2",
         "ecpay/magento2-module-invoice": "^2.4",
         "ecpay/magento2-module-applepay-payment-gateway": "^2.4",
