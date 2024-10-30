@@ -5,6 +5,12 @@
         <resources>
             <resource ref="anonymous"/>
         </resources>
+        <data>
+            <input>
+                <parameter name="orderId" xsi:type="string" required="true"/>
+                <parameter name="protectCode" xsi:type="string" required="true"/>
+            </input>
+        </data>
     </route>
 
     <route method="POST" url="/V1/ecpay_general/logistic/create_order">
@@ -12,6 +18,12 @@
         <resources>
             <resource ref="anonymous"/>
         </resources>
+        <data>
+            <input>
+                <parameter name="orderId" xsi:type="string" required="true"/>
+                <parameter name="protectCode" xsi:type="string" required="true"/>
+            </input>
+        </data>
     </route>
 
     <route method="POST" url="/V1/ecpay_general/logistic/print_order">
@@ -19,6 +31,12 @@
         <resources>
             <resource ref="anonymous"/>
         </resources>
+        <data>
+            <input>
+                <parameter name="orderId" xsi:type="string" required="true"/>
+                <parameter name="protectCode" xsi:type="string" required="true"/>
+            </input>
+        </data>
     </route>
 
     <route method="GET" url="/V1/ecpay_general/logistic/get_logistic_main_config">
@@ -26,6 +44,8 @@
         <resources>
             <resource ref="anonymous"/>
         </resources>
+        <data>
+        </data>
     </route>
 
     <route method="GET" url="/V1/ecpay_general/logistic/get_shipping_mothod">
@@ -33,6 +53,12 @@
         <resources>
             <resource ref="anonymous"/>
         </resources>
+        <data>
+            <input>
+                <parameter name="orderId" xsi:type="string" required="true"/>
+                <parameter name="protectCode" xsi:type="string" required="true"/>
+            </input>
+        </data>
     </route>
 
     <route method="GET" url="/V1/ecpay_general/logistic/get_shipping_tag">
@@ -40,16 +66,73 @@
         <resources>
             <resource ref="anonymous"/>
         </resources>
+        <data>
+            <input>
+                <parameter name="orderId" xsi:type="string" required="true"/>
+                <parameter name="protectCode" xsi:type="string" required="true"/>
+            </input>
+        </data>
+    </route>
+    
+    <route method="POST" url="/V1/ecpay_general/invoice/check_barcode">
+        <service class="Ecpay\General\Api\InvoiceInterface" method="checkBarcode"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+        <data>
+            <input>
+                <parameter name="barcode" xsi:type="string" required="true"/>
+            </input>
+        </data>
     </route>
 
+    <route method="POST" url="/V1/ecpay_general/invoice/check_love_code">
+        <service class="Ecpay\General\Api\InvoiceInterface" method="checkLoveCode"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+        <data>
+            <input>
+                <parameter name="loveCode" xsi:type="string" required="true"/>
+            </input>
+        </data>
+    </route>
 
+    <route method="POST" url="/V1/ecpay_general/invoice/check_citizen_digital_certificate">
+        <service class="Ecpay\General\Api\InvoiceInterface" method="checkCitizenDigitalCertificate"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+        <data>
+            <input>
+                <parameter name="carrierNumber" xsi:type="string" required="true"/>
+            </input>
+        </data>
+    </route>
 
-    
+    <route method="POST" url="/V1/ecpay_general/invoice/check_business_number">
+        <service class="Ecpay\General\Api\InvoiceInterface" method="checkBusinessNumber"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+        <data>
+            <input>
+                <parameter name="businessNumber" xsi:type="string" required="true"/>
+            </input>
+        </data>
+    </route>
+
     <route method="POST" url="/V1/ecpay_general/invoice/create_invoice">
         <service class="Ecpay\General\Api\InvoiceInterface" method="createInvoice"/>
         <resources>
             <resource ref="anonymous"/>
         </resources>
+        <data>
+            <input>
+                <parameter name="orderId" xsi:type="string" required="true"/>
+                <parameter name="protectCode" xsi:type="string" required="true"/>
+            </input>
+        </data>
     </route>
 
     <route method="POST" url="/V1/ecpay_general/invoice/invalid_invoice">
@@ -57,6 +140,12 @@
         <resources>
             <resource ref="anonymous"/>
         </resources>
+        <data>
+            <input>
+                <parameter name="orderId" xsi:type="string" required="true"/>
+                <parameter name="protectCode" xsi:type="string" required="true"/>
+            </input>
+        </data>
     </route>
 
     <route method="GET" url="/V1/ecpay_general/invoice/get_invoice_tag">
@@ -64,6 +153,12 @@
         <resources>
             <resource ref="anonymous"/>
         </resources>
+        <data>
+            <input>
+                <parameter name="orderId" xsi:type="string" required="true"/>
+                <parameter name="protectCode" xsi:type="string" required="true"/>
+            </input>
+        </data>
     </route>
 
     <route method="GET" url="/V1/ecpay_general/invoice/get_invoice_main_config">
@@ -71,6 +166,12 @@
         <resources>
             <resource ref="anonymous"/>
         </resources>
+        <data>
+            <input>
+                <parameter name="orderId" xsi:type="string" required="true"/>
+                <parameter name="protectCode" xsi:type="string" required="true"/>
+            </input>
+        </data>
     </route>
 
 </routes>

@@ -93,13 +93,14 @@ class PaymentResponse extends Action implements CsrfAwareActionInterface
             }
             $this->_loggerInterface->debug('PaymentResponse orderId:'. print_r($orderId, true));
 
-            // 取出 KEY IV MID
+            // 取出 KEY IV MID，判斷環境
             $accountInfo = $this->_paymentService->getStageAccount();
-            if (!$paymentInfo['MerchantID'] == $accountInfo['MerchantId']) {
+            $paymentStage = $this->_mainService->getPaymentConfig('enabled_payment_stage');
+            if ($paymentStage != 1) {
                 $accountInfo = [
                     'HashKey' => $this->_mainService->getPaymentConfig('payment_hashkey'),
                     'HashIv'  => $this->_mainService->getPaymentConfig('payment_hashiv'),
-                ] ;
+                ];
             }
             $this->_loggerInterface->debug('PaymentToEcpay accountInfo:'. print_r($accountInfo,true));
 
@@ -139,6 +140,11 @@ class PaymentResponse extends Action implements CsrfAwareActionInterface
 
                         // 異動旗標
                         $this->_orderService->setOrderData($orderId, 'ecpay_payment_complete_tag', 1) ;
+
+                        // 紀錄TWQR行動支付交易編號
+                        if (isset($paymentInfo['TWQRTradeNo']) && $paymentInfo['TWQRTradeNo'] != '') {
+                            $this->_orderService->setOrderCommentForBack($orderId, __('ECpay TWQR Trade No : ') . $paymentInfo['TWQRTradeNo']);
+                        }
                     } else {
                         // 模擬付款，僅更新備註
                         $this->_orderService->setOrderCommentForBack($orderId, __('Simulate paid, update the note only.'));
@@ -147,9 +153,7 @@ class PaymentResponse extends Action implements CsrfAwareActionInterface
             }
         }
 
-        echo '1|OK' ;
-
-        exit();
+        return '1|OK' ;
     }
 
     /**
