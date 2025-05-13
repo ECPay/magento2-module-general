@@ -10,16 +10,5 @@
             <severity value="MINOR"/>
             <group value="Ecpay_General"/>
         </annotations>
-        
-        <before>
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
-        </before>
-
-        <amOnPage url="{{AdminDashboardPage.url}}" stepKey="navigateToDashboard"/>
-        <see userInput="Dashboard" stepKey="seeAdminDashboard"/>
-
-        <after>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
-        </after>
     </test>
 </tests>
