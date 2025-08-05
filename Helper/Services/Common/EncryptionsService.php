@@ -24,15 +24,15 @@ class EncryptionsService extends AbstractHelper
 
     /**
      * @param EncryptionsHelper $encryptionsHelper
-     * @param GeneralHelper $generalHelper
+     * @param GeneralHelper     $generalHelper
      */
-	public function __construct(
+    public function __construct(
         EncryptionsHelper $encryptionsHelper,
         GeneralHelper $generalHelper
     ) {
-		$this->_encryptionsHelper = $encryptionsHelper;
-		$this->_generalHelper = $generalHelper;
-	}
+        $this->_encryptionsHelper = $encryptionsHelper;
+        $this->_generalHelper = $generalHelper;
+    }
 
     /**
      * 產生 AES KEY、IV

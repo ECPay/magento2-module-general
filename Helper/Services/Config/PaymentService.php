@@ -101,11 +101,9 @@ class PaymentService extends AbstractHelper
      */
     public function __construct(
         Context $context,
-
         MainService $mainService,
         MailService $mailService
-    )
-    {
+    ) {
         $this->_mainService = $mainService;
         $this->_mailService = $mailService;
 
@@ -115,8 +113,8 @@ class PaymentService extends AbstractHelper
     /**
      * 比對 checkMacValue
      *
-     * @param  array  $accountInfo
-     * @param  array  $input
+     * @param  array $accountInfo
+     * @param  array $input
      * @return bool
      */
     public function checkMacValue(array $accountInfo, array $input)
@@ -140,10 +138,12 @@ class PaymentService extends AbstractHelper
      */
     public function checkout(array $accountInfo, array $input, string $apiUrl)
     {
-        $factory = new Factory([
+        $factory = new Factory(
+            [
             'hashKey' => $accountInfo['HashKey'],
             'hashIv'  => $accountInfo['HashIv'],
-        ]);
+            ]
+        );
 
         $autoSubmitFormService = $factory->create('AutoSubmitFormWithCmvService');
 
@@ -180,38 +180,38 @@ class PaymentService extends AbstractHelper
         // Set the extend information
         $additionalInformation = $input['additionalInformation'];
         switch ($send['ChoosePayment']) {
-            case self::CREDIT:
-                $send['UnionPay'] = self::UNIONPAY_DISABLED;
+        case self::CREDIT:
+            $send['UnionPay'] = self::UNIONPAY_DISABLED;
 
-                // 分期付款額外參數
-                if ($input['paymentMethod'] == 'ecpay_credit_installment_gateway') {
-                    // 期數檢查，若不是啟用期數則帶錯誤值讓 AIO 擋
-                    $isValid = (isset($additionalInformation['ecpay_credit_installment']) && $this->isValidCreditInstallment($additionalInformation['ecpay_credit_installment']));
-                    $send['CreditInstallment'] = ($isValid) ? str_replace('credit_', '', $additionalInformation['ecpay_credit_installment']) : 'N';
-                }
-                break;
-            case self::ATM:
-                $expireDate = $this->_mainService->getPaymentModuleConfig('payment/ecpay_atm_gateway', 'expire_date');
-                $send['ExpireDate'] = ($expireDate === '') ? 3 : $expireDate;
-                $send['PaymentInfoURL'] = $input['paymentInfoUrl'];
-                break;
-            case self::CVS:
-                $expireDate = $this->_mainService->getPaymentModuleConfig('payment/ecpay_cvs_gateway', 'expire_date');
-                $expireDate = ($expireDate === '') ? 7 : $expireDate;
-                $send['StoreExpireDate'] = intval($expireDate) * 24 * 60;
-                $send['PaymentInfoURL'] = $input['paymentInfoUrl'];
-                break;
-            case self::BARCODE:
-                $expireDate = $this->_mainService->getPaymentModuleConfig('payment/ecpay_barcode_gateway', 'expire_date');
-                $send['StoreExpireDate'] = ($expireDate === '') ? 7 : $expireDate;
-                $send['PaymentInfoURL'] = $input['paymentInfoUrl'];
-                break;
-            case self::BNPL:
-                $send['PaymentInfoURL'] = $input['paymentInfoUrl'];
-                break;
-            case self::TWQR:
-                $send['NeedExtraPaidInfo'] = 'Y';
-                break;
+            // 分期付款額外參數
+            if ($input['paymentMethod'] == 'ecpay_credit_installment_gateway') {
+                // 期數檢查，若不是啟用期數則帶錯誤值讓 AIO 擋
+                $isValid = (isset($additionalInformation['ecpay_credit_installment']) && $this->isValidCreditInstallment($additionalInformation['ecpay_credit_installment']));
+                $send['CreditInstallment'] = ($isValid) ? str_replace('credit_', '', $additionalInformation['ecpay_credit_installment']) : 'N';
+            }
+            break;
+        case self::ATM:
+            $expireDate = $this->_mainService->getPaymentModuleConfig('payment/ecpay_atm_gateway', 'expire_date');
+            $send['ExpireDate'] = ($expireDate === '') ? 3 : $expireDate;
+            $send['PaymentInfoURL'] = $input['paymentInfoUrl'];
+            break;
+        case self::CVS:
+            $expireDate = $this->_mainService->getPaymentModuleConfig('payment/ecpay_cvs_gateway', 'expire_date');
+            $expireDate = ($expireDate === '') ? 7 : $expireDate;
+            $send['StoreExpireDate'] = intval($expireDate) * 24 * 60;
+            $send['PaymentInfoURL'] = $input['paymentInfoUrl'];
+            break;
+        case self::BARCODE:
+            $expireDate = $this->_mainService->getPaymentModuleConfig('payment/ecpay_barcode_gateway', 'expire_date');
+            $send['StoreExpireDate'] = ($expireDate === '') ? 7 : $expireDate;
+            $send['PaymentInfoURL'] = $input['paymentInfoUrl'];
+            break;
+        case self::BNPL:
+            $send['PaymentInfoURL'] = $input['paymentInfoUrl'];
+            break;
+        case self::TWQR:
+            $send['NeedExtraPaidInfo'] = 'Y';
+            break;
         }
         return $send;
     }
@@ -219,7 +219,7 @@ class PaymentService extends AbstractHelper
     /**
      * 轉換訂購商品格式符合金流訂單API
      *
-     * @param  array   $orderItem
+     * @param  array $orderItem
      * @return string  $itemName
      */
     public function convertToPaymentItemName($orderItem)
@@ -248,8 +248,8 @@ class PaymentService extends AbstractHelper
     /**
      * 取出API介接網址
      *
-     * @param  string  $action
-     * @param  int     $stage
+     * @param  string $action
+     * @param  int    $stage
      * @return string  $url
      */
     public function getApiUrl(string $action = 'check_out', int $stage = 1)
@@ -259,12 +259,12 @@ class PaymentService extends AbstractHelper
 
             switch ($action) {
 
-                case 'check_out':
-                    $url = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5' ;
+            case 'check_out':
+                $url = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5' ;
                 break;
 
-                default:
-                    $url = '' ;
+            default:
+                $url = '' ;
                 break;
             }
 
@@ -272,12 +272,12 @@ class PaymentService extends AbstractHelper
 
             switch ($action) {
 
-                case 'check_out':
-                    $url = 'https://payment.ecpay.com.tw/Cashier/AioCheckOut/V5' ;
+            case 'check_out':
+                $url = 'https://payment.ecpay.com.tw/Cashier/AioCheckOut/V5' ;
                 break;
 
-                default:
-                    $url = '' ;
+            default:
+                $url = '' ;
                 break;
             }
         }
@@ -288,7 +288,7 @@ class PaymentService extends AbstractHelper
     /**
      * 取得 AIO 對應的 ChoosePayment
      *
-     * @param  string  $paymentMethod
+     * @param  string $paymentMethod
      * @return string  $choosePayment
      */
     public function getChoosePayment(string $paymentMethod)
@@ -296,34 +296,34 @@ class PaymentService extends AbstractHelper
         $choosePayment = '' ;
 
         switch ($paymentMethod) {
-            case 'ecpay_credit_gateway':
-            case 'ecpay_credit_installment_gateway':
-                $choosePayment = self::CREDIT ;
-                break;
-            case 'ecpay_webatm_gateway':
-                $choosePayment = self::WEBATM ;
-                break;
-            case 'ecpay_atm_gateway':
-                $choosePayment = self::ATM ;
-                break;
-            case 'ecpay_cvs_gateway':
-                $choosePayment = self::CVS ;
-                break;
-            case 'ecpay_barcode_gateway':
-                $choosePayment = self::BARCODE ;
-                break;
-            case 'ecpay_applepay_gateway':
-                $choosePayment = self::APPLEPAY ;
-                break;
-            case 'ecpay_twqr_gateway':
-                $choosePayment = self::TWQR ;
-                break;
-            case 'ecpay_bnpl_gateway':
-                $choosePayment = self::BNPL ;
-                break;
-            case 'ecpay_weixin_gateway':
-                $choosePayment = self::WEIXIN ;
-                break;
+        case 'ecpay_credit_gateway':
+        case 'ecpay_credit_installment_gateway':
+            $choosePayment = self::CREDIT ;
+            break;
+        case 'ecpay_webatm_gateway':
+            $choosePayment = self::WEBATM ;
+            break;
+        case 'ecpay_atm_gateway':
+            $choosePayment = self::ATM ;
+            break;
+        case 'ecpay_cvs_gateway':
+            $choosePayment = self::CVS ;
+            break;
+        case 'ecpay_barcode_gateway':
+            $choosePayment = self::BARCODE ;
+            break;
+        case 'ecpay_applepay_gateway':
+            $choosePayment = self::APPLEPAY ;
+            break;
+        case 'ecpay_twqr_gateway':
+            $choosePayment = self::TWQR ;
+            break;
+        case 'ecpay_bnpl_gateway':
+            $choosePayment = self::BNPL ;
+            break;
+        case 'ecpay_weixin_gateway':
+            $choosePayment = self::WEIXIN ;
+            break;
         }
 
         return $choosePayment ;
@@ -355,20 +355,20 @@ class PaymentService extends AbstractHelper
     public function getCreditInstallmentName(string $key)
     {
         switch ($key) {
-            case 'credit_3':
-                return __('Credit(3 Periods)');
-            case 'credit_6':
-                return __('Credit(6 Periods)');
-            case 'credit_12':
-                return __('Credit(12 Periods)');
-            case 'credit_18':
-                return __('Credit(18 Periods)');
-            case 'credit_24':
-                return __('Credit(24 Periods)');
-            case 'credit_30N':
-                return __('Dream Installment (available only at Bank SinoPac)');
-            default:
-                return '';
+        case 'credit_3':
+            return __('Credit(3 Periods)');
+        case 'credit_6':
+            return __('Credit(6 Periods)');
+        case 'credit_12':
+            return __('Credit(12 Periods)');
+        case 'credit_18':
+            return __('Credit(18 Periods)');
+        case 'credit_24':
+            return __('Credit(24 Periods)');
+        case 'credit_30N':
+            return __('Dream Installment (available only at Bank SinoPac)');
+        default:
+            return '';
         }
     }
 
@@ -427,47 +427,47 @@ class PaymentService extends AbstractHelper
 
         $type = $this->getPaymentMethod($inputs['PaymentType']);
         switch ($type) {
-            case 'ATM':
-                return sprintf(
-                    $pattern,
-                    $inputs['RtnCode'],
-                    $inputs['RtnMsg'],
-                    $inputs['BankCode'],
-                    $inputs['vAccount'],
-                    $inputs['ExpireDate']
-                );
+        case 'ATM':
+            return sprintf(
+                $pattern,
+                $inputs['RtnCode'],
+                $inputs['RtnMsg'],
+                $inputs['BankCode'],
+                $inputs['vAccount'],
+                $inputs['ExpireDate']
+            );
                 break;
-            case 'CVS':
-                return sprintf(
-                    $pattern,
-                    $inputs['RtnCode'],
-                    $inputs['RtnMsg'],
-                    $inputs['PaymentNo'],
-                    $inputs['ExpireDate']
-                );
+        case 'CVS':
+            return sprintf(
+                $pattern,
+                $inputs['RtnCode'],
+                $inputs['RtnMsg'],
+                $inputs['PaymentNo'],
+                $inputs['ExpireDate']
+            );
                 break;
-            case 'BARCODE':
-                return sprintf(
-                    $pattern,
-                    $inputs['RtnCode'],
-                    $inputs['RtnMsg'],
-                    $inputs['ExpireDate'],
-                    $inputs['Barcode1'],
-                    $inputs['Barcode2'],
-                    $inputs['Barcode3']
-                );
+        case 'BARCODE':
+            return sprintf(
+                $pattern,
+                $inputs['RtnCode'],
+                $inputs['RtnMsg'],
+                $inputs['ExpireDate'],
+                $inputs['Barcode1'],
+                $inputs['Barcode2'],
+                $inputs['Barcode3']
+            );
                 break;
-            case 'BNPL':
-                return sprintf(
-                    $pattern,
-                    $inputs['RtnCode'],
-                    $inputs['RtnMsg'],
-                    $inputs['BNPLTradeNo'],
-                    $inputs['BNPLInstallment'],
-                );
+        case 'BNPL':
+            return sprintf(
+                $pattern,
+                $inputs['RtnCode'],
+                $inputs['RtnMsg'],
+                $inputs['BNPLTradeNo'],
+                $inputs['BNPLInstallment'],
+            );
                 break;
-            default:
-                break;
+        default:
+            break;
         }
         return $undefinedMessage;
     }
@@ -475,8 +475,8 @@ class PaymentService extends AbstractHelper
     /**
      * Get the paymentinfo response
      *
-     * @param  string  $orderId
-     * @param  array   $paymentInfo
+     * @param  string $orderId
+     * @param  array  $paymentInfo
      * @return array
      */
     public function getPaymentInfoResponse(string $orderId, array $paymentInfo)
@@ -486,18 +486,18 @@ class PaymentService extends AbstractHelper
 
         if (intval($paymentInfo['RtnCode']) == $successCode) {
             switch ($paymentMethod) {
-                case self::ATM:
-                    $pattern = __('Getting Code Result : (%s)%s, Bank Code : %s, Virtual Account : %s, Payment Deadline : %s');
-                    break;
-                case self::CVS:
-                    $pattern = __('Getting Code Result : (%s)%s, Trade Code : %s, Payment Deadline : %s');
-                    break;
-                case self::BARCODE:
-                    $pattern = __('Getting Code Result : (%s)%s, Payment Deadline : %s, BARCODE 1 : %s, BARCODE 2 : %s, BARCODE 3 : %s');
-                    break;
-                case self::BNPL:
-                    $pattern = __('Getting Code Result : (%s)%s, BNPL Trade No : %s, BNPL Installment : %s');
-                    break;
+            case self::ATM:
+                $pattern = __('Getting Code Result : (%s)%s, Bank Code : %s, Virtual Account : %s, Payment Deadline : %s');
+                break;
+            case self::CVS:
+                $pattern = __('Getting Code Result : (%s)%s, Trade Code : %s, Payment Deadline : %s');
+                break;
+            case self::BARCODE:
+                $pattern = __('Getting Code Result : (%s)%s, Payment Deadline : %s, BARCODE 1 : %s, BARCODE 2 : %s, BARCODE 3 : %s');
+                break;
+            case self::BNPL:
+                $pattern = __('Getting Code Result : (%s)%s, BNPL Trade No : %s, BNPL Installment : %s');
+                break;
             }
 
             return [
@@ -515,7 +515,7 @@ class PaymentService extends AbstractHelper
     /**
      * Get the paymentinfo template values
      *
-     * @param  array   $paymentInfo
+     * @param  array $paymentInfo
      * @return array   $templateValues
      */
     public function getPaymentInfoTemplateValues(array $paymentInfo)
@@ -524,27 +524,27 @@ class PaymentService extends AbstractHelper
 
         $templateValues = [];
         switch($paymentMethod) {
-            case 'ATM':
-                $templateValues = [
-                    'bank_code'   => $paymentInfo['BankCode'],
-                    'atm_no'      => implode(' ', str_split($paymentInfo['vAccount'], 4)),
-                    'expire_date' => $paymentInfo['ExpireDate'],
-                ];
-                break;
-            case 'CVS':
-                $templateValues = [
-                    'cvs_no'      => $paymentInfo['PaymentNo'],
-                    'expire_date' => $paymentInfo['ExpireDate'],
-                ];
-                break;
-            case 'BARCODE':
-                $templateValues = [
-                    'barcode_one'   => $paymentInfo['Barcode1'],
-                    'barcode_two'   => $paymentInfo['Barcode2'],
-                    'barcode_three' => $paymentInfo['Barcode3'],
-                    'expire_date'   => $paymentInfo['ExpireDate'],
-                ];
-                break;
+        case 'ATM':
+            $templateValues = [
+                'bank_code'   => $paymentInfo['BankCode'],
+                'atm_no'      => implode(' ', str_split($paymentInfo['vAccount'], 4)),
+                'expire_date' => $paymentInfo['ExpireDate'],
+            ];
+            break;
+        case 'CVS':
+            $templateValues = [
+                'cvs_no'      => $paymentInfo['PaymentNo'],
+                'expire_date' => $paymentInfo['ExpireDate'],
+            ];
+            break;
+        case 'BARCODE':
+            $templateValues = [
+                'barcode_one'   => $paymentInfo['Barcode1'],
+                'barcode_two'   => $paymentInfo['Barcode2'],
+                'barcode_three' => $paymentInfo['Barcode3'],
+                'expire_date'   => $paymentInfo['ExpireDate'],
+            ];
+            break;
         }
 
         return $templateValues;
@@ -570,7 +570,7 @@ class PaymentService extends AbstractHelper
     /**
      * Get AIO returnurl response
      *
-     * @param  array  $paymentInfo
+     * @param  array $paymentInfo
      * @return array
      */
     public function getReturnUrlResponse(array $paymentInfo)
@@ -647,8 +647,8 @@ class PaymentService extends AbstractHelper
     /**
      * Filter the inputs
      *
-     * @param array $source Source data
-     * @param array $whiteList White list
+     * @param  array $source    Source data
+     * @param  array $whiteList White list
      * @return array
      */
     public function only($source = array(), $whiteList = array())
@@ -672,6 +672,7 @@ class PaymentService extends AbstractHelper
 
     /**
      * Send payment response info mail
+     *
      * @param array $mailData
      */
     public function sendMail($mailData = array())
@@ -706,39 +707,39 @@ class PaymentService extends AbstractHelper
 
         $lower = strtolower($paymentType);
         switch ($lower) {
-            case 'all':
-                $sdkPayment = self::ALL;
-                break;
-            case 'credit':
-                $sdkPayment = self::CREDIT;
-                break;
-            case 'webatm':
-                $sdkPayment = self::WEBATM;
-                break;
-            case 'atm':
-                $sdkPayment = self::ATM;
-                break;
-            case 'cvs':
-                $sdkPayment = self::CVS;
-                break;
-            case 'barcode':
-                $sdkPayment = self::BARCODE;
-                break;
-            case 'applepay':
-                $sdkPayment = self::APPLEPAY;
-                break;
-            case 'twqr':
-                $sdkPayment = self::TWQR;
-                break;
-            case 'bnpl':
-                $sdkPayment = self::BNPL;
-                break;
-            case 'weixin':
-                $sdkPayment = self::WEIXIN;
-                break;
-            default:
-                $sdkPayment = '';
-                break;
+        case 'all':
+            $sdkPayment = self::ALL;
+            break;
+        case 'credit':
+            $sdkPayment = self::CREDIT;
+            break;
+        case 'webatm':
+            $sdkPayment = self::WEBATM;
+            break;
+        case 'atm':
+            $sdkPayment = self::ATM;
+            break;
+        case 'cvs':
+            $sdkPayment = self::CVS;
+            break;
+        case 'barcode':
+            $sdkPayment = self::BARCODE;
+            break;
+        case 'applepay':
+            $sdkPayment = self::APPLEPAY;
+            break;
+        case 'twqr':
+            $sdkPayment = self::TWQR;
+            break;
+        case 'bnpl':
+            $sdkPayment = self::BNPL;
+            break;
+        case 'weixin':
+            $sdkPayment = self::WEIXIN;
+            break;
+        default:
+            $sdkPayment = '';
+            break;
         }
         return $sdkPayment;
     }

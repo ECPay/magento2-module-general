@@ -44,21 +44,16 @@ class PaymentInfoResponse extends Action implements CsrfAwareActionInterface
         LoggerInterface $loggerInterface,
         Context $context,
         RequestInterface $requestInterface,
-
         EncryptionsService $encryptionsService,
         OrderService $orderService,
-
         MainService $mainService,
         InvoiceService $invoiceService,
         LogisticService $logisticService,
         PaymentService $paymentService,
-
         EncryptionsHelper $encryptionsHelper,
         GeneralHelper $generalHelper,
-
         EcpayPaymentInfoFactory $ecpayPaymentInfoFactory
-    )
-    {
+    ) {
         $this->_loggerInterface = $loggerInterface;
         $this->_requestInterface = $requestInterface;
 
@@ -82,7 +77,7 @@ class PaymentInfoResponse extends Action implements CsrfAwareActionInterface
     {
         // 接收金流資訊
         $paymentInfo = $this->_requestInterface->getPostValue();
-        $this->_loggerInterface->debug('PaymentInfoResponse paymentInfo:'. print_r($paymentInfo,true));
+        $this->_loggerInterface->debug('PaymentInfoResponse paymentInfo:'. print_r($paymentInfo, true));
 
         if (count($paymentInfo) < 1) {
             throw new Exception('Get ECPay feedback failed.');
@@ -90,13 +85,13 @@ class PaymentInfoResponse extends Action implements CsrfAwareActionInterface
 
             // 取得原始訂單編號
             $orderInfo = $this->_orderService->getOrderIdByPaymentMerchantTradeNo($paymentInfo['MerchantTradeNo']);
-            $this->_loggerInterface->debug('PaymentInfoResponse orderInfo:'. print_r($orderInfo,true));
+            $this->_loggerInterface->debug('PaymentInfoResponse orderInfo:'. print_r($orderInfo, true));
 
             if (isset($orderInfo['entity_id']) && $orderInfo['entity_id'] !== '') {
                 $orderId = intval($orderInfo['entity_id']);
             } else {
-                $enctyOrderId = $this->getRequest()->getParam('id') ;
-                $enctyOrderId = str_replace(' ', '+', $enctyOrderId) ;
+                $enctyOrderId = $this->getRequest()->getParam('id');
+                $enctyOrderId = str_replace(' ', '+', $enctyOrderId);
                 $orderId      = intval($this->_encryptionsService->decrypt($enctyOrderId));
             }
             $this->_loggerInterface->debug('PaymentInfoResponse orderId:'. print_r($orderId, true));
@@ -110,7 +105,7 @@ class PaymentInfoResponse extends Action implements CsrfAwareActionInterface
                     'HashIv'  => $this->_mainService->getPaymentConfig('payment_hashiv'),
                 ] ;
             }
-            $this->_loggerInterface->debug('PaymentToEcpay accountInfo:'. print_r($accountInfo,true));
+            $this->_loggerInterface->debug('PaymentToEcpay accountInfo:'. print_r($accountInfo, true));
 
             // 驗證參數(金額及checkMacValue)
             $checkMacValue = $this->_paymentService->checkMacValue($accountInfo, $paymentInfo);
@@ -213,29 +208,29 @@ class PaymentInfoResponse extends Action implements CsrfAwareActionInterface
 
         $paymentMethod = $this->_paymentService->getPaymentMethod($response['PaymentType']);
         switch($paymentMethod) {
-            case 'ATM':
-                $extension = [
-                    'expire_date' => $response['ExpireDate'],
-                    'bank_code'   => $response['BankCode'],
-                    'vaccount'    => $response['vAccount'],
-                ];
-                break;
-            case 'CVS':
-            case 'BARCODE':
-                $extension = [
-                    'expire_date' => $response['ExpireDate'],
-                    'payment_no'  => $response['PaymentNo'],
-                    'barcode1'    => $response['Barcode1'],
-                    'barcode2'    => $response['Barcode2'],
-                    'barcode3'    => $response['Barcode3'],
-                ];
-                break;
-            case 'BNPL':
-                $extension = [
-                    'bnpl_trade_no' => $response['BNPLTradeNo'],
-                    'bnpl_installment'   => $response['BNPLInstallment'],
-                ];
-                break;
+        case 'ATM':
+            $extension = [
+                'expire_date' => $response['ExpireDate'],
+                'bank_code'   => $response['BankCode'],
+                'vaccount'    => $response['vAccount'],
+            ];
+            break;
+        case 'CVS':
+        case 'BARCODE':
+            $extension = [
+                'expire_date' => $response['ExpireDate'],
+                'payment_no'  => $response['PaymentNo'],
+                'barcode1'    => $response['Barcode1'],
+                'barcode2'    => $response['Barcode2'],
+                'barcode3'    => $response['Barcode3'],
+            ];
+            break;
+        case 'BNPL':
+            $extension = [
+                'bnpl_trade_no' => $response['BNPLTradeNo'],
+                'bnpl_installment'   => $response['BNPLInstallment'],
+            ];
+            break;
         }
         $paymentInfoData = array_merge($paymentInfoData, $extension);
 

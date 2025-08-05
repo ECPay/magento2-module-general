@@ -5,12 +5,11 @@
 ?>
 
 <div id="loading-spinner">
-    <img src="<?= $block->getViewFileUrl('Ecpay_General::images/icons8-loading.gif'); ?>" alt="Loading..." />
+    <img src="<?= $block->escapeHtml($block->getViewFileUrl('Ecpay_General::images/icons8-loading.gif')) ?>" alt="Loading..." />
     <p id="loading-text"><?= $block->escapeHtml(__('Redirect To ECPay')) ?></p>
 </div>
 
-<?php
-    // 轉導綠界表單
-    $formHtml = $block->getFormHtml();
-    if ($formHtml) echo $formHtml;
-?>
+<?php if ($block->getFormHtml()): ?>
+    <!-- 綠界安全表單輸出 -->
+    <?= /* @noEscape */ $block->getFormHtml() ?>
+<?php endif; ?>

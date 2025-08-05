@@ -24,18 +24,18 @@ if ($isShow) {
     <?php if ($orderInfo['state'] !== 'canceled' && $orderInfo['state'] !== 'closed') : ?>
         <!-- 交易成功 -->
         <div class="checkout-success">
-            <h1><?= $block->escapeHtml(__('Thank you for your purchase!'))?></h1>
+            <h1><?php echo $block->escapeHtml(__('Thank you for your purchase!')); ?></h1>
 
             <!-- 訂單資訊 -->
             <div class="block-ecpay-thankyou">
-                <div class="block-title"><strong><?= $block->escapeHtml(__('Order Information'))?></strong></div>
+                <div class="block-title"><strong><?php echo $block->escapeHtml(__('Order Information')); ?></strong></div>
                 <div class="block-content">
                     <div class="box">
                         <div class="box-content">
                             <p>
-                                <?= $block->escapeHtml(__('Order ID'))?>：<?= $orderInfo['real_order_id']; ?><br>
-                                <?= $block->escapeHtml(__('Order Date'))?>：<?= $block->formatDate($orderInfo['created_at']); ?><br>
-                                <?= $block->escapeHtml(__('Grand Total'))?>：<?= $orders->formatPrice($orderInfo['amount']); ?><br>
+                                <?php echo $block->escapeHtml(__('Order ID')); ?>：<?= $block->escapeHtml($orderInfo['real_order_id']) ?><br>
+                                <?php echo $block->escapeHtml(__('Order Date')); ?>：<?= $block->escapeHtml($block->formatDate($orderInfo['created_at'])) ?><br>
+                                <?php echo $block->escapeHtml(__('Grand Total')); ?>：<?= $block->escapeHtml($orderInfo['amount'], ['span']) ?><br>
                             </p>
                         </div>
                     </div>
@@ -45,16 +45,16 @@ if ($isShow) {
 
             <!-- 付款資訊 -->
             <div class="block-ecpay-thankyou">
-                <div class="block-title"><strong><?= $block->escapeHtml(__('Payment Information'))?></strong></div>
+                <div class="block-title"><strong><?php echo $block->escapeHtml(__('Payment Information')); ?></strong></div>
                 <div class="block-content">
                     <div class="box">
                         <div class="box-content">
                             <p>
-                                <?= $block->escapeHtml(__('Payment Method'))?>：<?= $paymentInfo['payment_method']; ?><br>
+                                <?php echo $block->escapeHtml(__('Payment Method')); ?>：<?= $block->escapeHtml($paymentInfo['payment_method']) ?><br>
 
                                 <?php if ($paymentInfo['is_ecpay_payment'] === 'Y' && !empty($paymentInfo['payment_info'])) : ?>
                                     <?php foreach ($paymentInfo['payment_info'] as $info): ?>
-                                        <?= $info['key']; ?>：<?= $info['val']; ?> <br>
+                                        <?php echo $block->escapeHtml($info['key']); ?>：<?php echo $block->escapeHtml($info['val']); ?> <br>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </p>
@@ -66,16 +66,16 @@ if ($isShow) {
 
             <!-- 運送資訊 -->
             <div class="block-ecpay-thankyou">
-                <div class="block-title"><strong><?= $block->escapeHtml(__('Shipping Information'))?></strong></div>
+                <div class="block-title"><strong><?php echo $block->escapeHtml(__('Shipping Information')); ?></strong></div>
                 <div class="block-content">
                     <div class="box">
                         <div class="box-content">
                             <p>
-                                <?= $block->escapeHtml(__('Shipping Method'))?>：<?= $shippingInfo['shipping_method']; ?><br>
+                                <?php echo $block->escapeHtml(__('Shipping Method')); ?>：<?= $block->escapeHtml($shippingInfo['shipping_method']) ?><br>
                                 <?php if ($shippingInfo['is_ecpay_cvs_logistics'] === 'Y') : ?>
-                                <?= $block->escapeHtml(__('CVS Store ID'))?>：<?php echo $cvsInfo['cvs_store_id'] ?><br>
-                                <?= $block->escapeHtml(__('CVS Store Name'))?>：<?php echo $cvsInfo['cvs_store_name'] ?><br>
-                                <?= $block->escapeHtml(__('CVS Store Address'))?>：<?php echo $cvsInfo['cvs_store_address'] ?><br>
+                                <?php echo $block->escapeHtml(__('CVS Store ID')); ?>：<?= $block->escapeHtml($cvsInfo['cvs_store_id']) ?><br>
+                                <?php echo $block->escapeHtml(__('CVS Store Name')); ?>：<?= $block->escapeHtml($cvsInfo['cvs_store_name']) ?><br>
+                                <?php echo $block->escapeHtml(__('CVS Store Address')); ?>：<?= $block->escapeHtml($cvsInfo['cvs_store_address']) ?><br>
                                 <?php endif; ?>
                             </p>
                         </div>
@@ -86,24 +86,24 @@ if ($isShow) {
 
             <div class="actions-toolbar">
                 <div class="primary">
-                    <a class="action primary continue" href="<?= $block->escapeUrl($block->getContinueUrl()) ?>"><span><?= $block->escapeHtml(__('Continue Shopping')) ?></span></a>
+                    <a class="action primary continue" href="<?php echo $block->escapeUrl($block->getContinueUrl()); ?>"><span><?php echo $block->escapeHtml(__('Continue Shopping')); ?></span></a>
                 </div>
             </div>
         </div>
     <?php else: ?>
         <!-- 交易失敗 -->
-        <h1><?= $block->escapeHtml(__('Payment failed.'))?></h1>
+        <h1><?php echo $block->escapeHtml(__('Payment failed.')); ?></h1>
 
         <?php if ($orderInfo['real_order_id']) :?>
-            <p><?= $block->escapeHtml(__('Order #') . $orderInfo['real_order_id']) ?></p>
-        <?php endif ?>
+            <p><?php echo $block->escapeHtml(__('Order #')) . $block->escapeHtml($orderInfo['real_order_id']); ?></p>
+        <?php endif; ?>
         <?php if ($error = $block->getErrorMessage()) :?>
-            <p><?= $block->escapeHtml($error) ?></p>
-        <?php endif ?>
-        <p><?= $block->escapeHtml(
+            <p><?php echo $block->escapeHtml($error); ?></p>
+        <?php endif; ?>
+        <p><?php echo $block->escapeHtml(
             __('Click <a href="%1">here</a> to continue shopping.', $block->escapeUrl($block->getContinueUrl())),
             ['a']
-        ) ?>
+        ); ?>
         </p>
     <?php endif; ?>
-<?php endif ?>
+<?php endif; ?>

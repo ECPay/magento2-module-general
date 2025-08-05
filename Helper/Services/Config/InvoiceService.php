@@ -25,12 +25,10 @@ class InvoiceService extends AbstractHelper
     public function __construct(
         Context $context,
         UrlInterface $urlInterface,
-
         MainService $mainService,
         OrderService $orderService,
         LogisticService $logisticService
-    )
-    {
+    ) {
         $this->_urlInterface = $urlInterface;
 
         $this->_mainService = $mainService;
@@ -59,43 +57,44 @@ class InvoiceService extends AbstractHelper
 
     /**
      * 取出API介接網址
-     * @param  string  $action
-     * @param  string  $stage
+     *
+     * @param  string $action
+     * @param  string $stage
      * @return string  $url
      */
     public function getApiUrl($action = 'issue', $stage = 1)
     {
 
-        if($stage == 1){
+        if($stage == 1) {
 
             switch ($action) {
 
-                case 'check_love_code':
-                    $url = 'https://einvoice-stage.ecpay.com.tw/B2CInvoice/CheckLoveCode';
+            case 'check_love_code':
+                $url = 'https://einvoice-stage.ecpay.com.tw/B2CInvoice/CheckLoveCode';
                 break;
 
-                case 'check_barcode':
-                    $url = 'https://einvoice-stage.ecpay.com.tw/B2CInvoice/CheckBarcode';
+            case 'check_barcode':
+                $url = 'https://einvoice-stage.ecpay.com.tw/B2CInvoice/CheckBarcode';
                 break;
 
-                case 'issue':
-                    $url = 'https://einvoice-stage.ecpay.com.tw/B2CInvoice/Issue';
+            case 'issue':
+                $url = 'https://einvoice-stage.ecpay.com.tw/B2CInvoice/Issue';
                 break;
 
-                case 'delay_issue':
-                    $url = 'https://einvoice-stage.ecpay.com.tw/B2CInvoice/DelayIssue';
+            case 'delay_issue':
+                $url = 'https://einvoice-stage.ecpay.com.tw/B2CInvoice/DelayIssue';
                 break;
 
-                case 'invalid':
-                    $url = 'https://einvoice-stage.ecpay.com.tw/B2CInvoice/Invalid';
+            case 'invalid':
+                $url = 'https://einvoice-stage.ecpay.com.tw/B2CInvoice/Invalid';
                 break;
 
-                case 'cancel_delay_issue':
-                    $url = 'https://einvoice-stage.ecpay.com.tw/B2CInvoice/CancelDelayIssue';
+            case 'cancel_delay_issue':
+                $url = 'https://einvoice-stage.ecpay.com.tw/B2CInvoice/CancelDelayIssue';
                 break;
 
-                default:
-                    $url = '';
+            default:
+                $url = '';
                 break;
             }
 
@@ -103,32 +102,32 @@ class InvoiceService extends AbstractHelper
 
             switch ($action) {
 
-                case 'check_love_code':
-                    $url = 'https://einvoice.ecpay.com.tw/B2CInvoice/CheckLoveCode';
+            case 'check_love_code':
+                $url = 'https://einvoice.ecpay.com.tw/B2CInvoice/CheckLoveCode';
                 break;
 
-                case 'check_barcode':
-                    $url = 'https://einvoice.ecpay.com.tw/B2CInvoice/CheckBarcode';
+            case 'check_barcode':
+                $url = 'https://einvoice.ecpay.com.tw/B2CInvoice/CheckBarcode';
                 break;
 
-                case 'issue':
-                    $url = 'https://einvoice.ecpay.com.tw/B2CInvoice/Issue';
+            case 'issue':
+                $url = 'https://einvoice.ecpay.com.tw/B2CInvoice/Issue';
                 break;
 
-                case 'delay_issue':
-                    $url = 'https://einvoice.ecpay.com.tw/B2CInvoice/DelayIssue';
+            case 'delay_issue':
+                $url = 'https://einvoice.ecpay.com.tw/B2CInvoice/DelayIssue';
                 break;
 
-                case 'invalid':
-                    $url = 'https://einvoice.ecpay.com.tw/B2CInvoice/Invalid';
+            case 'invalid':
+                $url = 'https://einvoice.ecpay.com.tw/B2CInvoice/Invalid';
                 break;
 
-                case 'cancel_delay_issue':
-                    $url = 'https://einvoice.ecpay.com.tw/B2CInvoice/CancelDelayIssue';
+            case 'cancel_delay_issue':
+                $url = 'https://einvoice.ecpay.com.tw/B2CInvoice/CancelDelayIssue';
                 break;
 
-                default:
-                    $url = '';
+            default:
+                $url = '';
                 break;
             }
         }
@@ -152,6 +151,7 @@ class InvoiceService extends AbstractHelper
 
     /**
      * 開立發票
+     *
      * @param string $orderId
      */
     public function invoiceIssue($orderId)
@@ -271,10 +271,12 @@ class InvoiceService extends AbstractHelper
 
         if (true) {
         
-            $factory = new Factory([
+            $factory = new Factory(
+                [
                 'hashKey'   => $accountInfo['HashKey'],
                 'hashIv'    => $accountInfo['HashIv'],
-            ]);
+                ]
+            );
 
             $postService = $factory->create('PostWithAesJsonResponseService');
 
@@ -311,62 +313,62 @@ class InvoiceService extends AbstractHelper
             ];
 
             switch ($ecpayInvoiceType) {
-                case EcpayInvoice::ECPAY_INVOICE_TYPE_P:
-                    $this->_logger->debug('InvoiceService ecpayInvoiceType:個人');
+            case EcpayInvoice::ECPAY_INVOICE_TYPE_P:
+                $this->_logger->debug('InvoiceService ecpayInvoiceType:個人');
 
-                    switch ($ecpayInvoiceCarruerType) {
-                        case '1':
-                            $data['CarrierType'] = '1';
-                        break;
+                switch ($ecpayInvoiceCarruerType) {
+                case '1':
+                    $data['CarrierType'] = '1';
+                    break;
 
-                        case '2':
-                            $data['CarrierType'] = '2';
-                            $data['CarrierNum'] = $ecpayInvoiceCarruerNum;
-                        break;
+                case '2':
+                    $data['CarrierType'] = '2';
+                    $data['CarrierNum'] = $ecpayInvoiceCarruerNum;
+                    break;
 
-                        case '3':
-                            $data['CarrierType'] = '3';
-                            $data['CarrierNum'] = $ecpayInvoiceCarruerNum;
-                        break;
+                case '3':
+                    $data['CarrierType'] = '3';
+                    $data['CarrierNum'] = $ecpayInvoiceCarruerNum;
+                    break;
 
-                        default:
-                            $data['Print'] = '1';
-                        break;
-                    }
+                default:
+                    $data['Print'] = '1';
+                    break;
+                }
 
                 break;
 
-                case EcpayInvoice::ECPAY_INVOICE_TYPE_C:
-                    $this->_logger->debug('InvoiceService ecpayInvoiceType:公司');
+            case EcpayInvoice::ECPAY_INVOICE_TYPE_C:
+                $this->_logger->debug('InvoiceService ecpayInvoiceType:公司');
 
-                    switch ($ecpayInvoiceCarruerType) {
-                        case '1':
-                            $data['CarrierType'] = '1';
-                        break;
+                switch ($ecpayInvoiceCarruerType) {
+                case '1':
+                    $data['CarrierType'] = '1';
+                    break;
 
-                        case '2':
-                            $data['CarrierType'] = '2';
-                            $data['CarrierNum'] = $ecpayInvoiceCarruerNum;
-                        break;
+                case '2':
+                    $data['CarrierType'] = '2';
+                    $data['CarrierNum'] = $ecpayInvoiceCarruerNum;
+                    break;
 
-                        case '3':
-                            $data['CarrierType'] = '3';
-                            $data['CarrierNum'] = $ecpayInvoiceCarruerNum;
-                        break;
+                case '3':
+                    $data['CarrierType'] = '3';
+                    $data['CarrierNum'] = $ecpayInvoiceCarruerNum;
+                    break;
 
-                        default:
-                            $data['Print'] = '1';
-                    }
+                default:
+                    $data['Print'] = '1';
+                }
                     
-                    $data['CustomerIdentifier'] = $ecpayInvoiceCustomerIdentifier;
-                    $data['CustomerName'] = $ecpayInvoiceCustomerCompany;
+                $data['CustomerIdentifier'] = $ecpayInvoiceCustomerIdentifier;
+                $data['CustomerName'] = $ecpayInvoiceCustomerCompany;
 
                 break;
 
-                case EcpayInvoice::ECPAY_INVOICE_TYPE_D:
-                    $this->_logger->debug('InvoiceService ecpayInvoiceType:捐贈');
-                    $data['Donation'] = '1';
-                    $data['LoveCode'] = $ecpayInvoiceLoveCode;
+            case EcpayInvoice::ECPAY_INVOICE_TYPE_D:
+                $this->_logger->debug('InvoiceService ecpayInvoiceType:捐贈');
+                $data['Donation'] = '1';
+                $data['LoveCode'] = $ecpayInvoiceLoveCode;
 
                 break;
             }
@@ -429,15 +431,15 @@ class InvoiceService extends AbstractHelper
                     ];
 
                     switch ($ecpayInvoiceType) {
-                        case EcpayInvoice::ECPAY_INVOICE_TYPE_P:
-                            $dataResponse['ecpay_invoice_carruer_num'] = $ecpayInvoiceCarruerNum ;
+                    case EcpayInvoice::ECPAY_INVOICE_TYPE_P:
+                        $dataResponse['ecpay_invoice_carruer_num'] = $ecpayInvoiceCarruerNum ;
                         break;
-                        case EcpayInvoice::ECPAY_INVOICE_TYPE_C:
-                            $dataResponse['ecpay_invoice_customer_company'] = $ecpayInvoiceCustomerCompany ;
-                            $dataResponse['ecpay_invoice_customer_identifier'] = $ecpayInvoiceCustomerIdentifier ;
+                    case EcpayInvoice::ECPAY_INVOICE_TYPE_C:
+                        $dataResponse['ecpay_invoice_customer_company'] = $ecpayInvoiceCustomerCompany ;
+                        $dataResponse['ecpay_invoice_customer_identifier'] = $ecpayInvoiceCustomerIdentifier ;
                         break;
-                        case EcpayInvoice::ECPAY_INVOICE_TYPE_D:
-                            $dataResponse['ecpay_invoice_love_code'] = $ecpayInvoiceLoveCode ;
+                    case EcpayInvoice::ECPAY_INVOICE_TYPE_D:
+                        $dataResponse['ecpay_invoice_love_code'] = $ecpayInvoiceLoveCode ;
                         break;
                     }
 

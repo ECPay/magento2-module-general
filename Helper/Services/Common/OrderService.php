@@ -45,8 +45,7 @@ class OrderService extends AbstractHelper
         OrderFactory $orderFactory,
         ShipmentNotifier $shipmentNotifier,
         PaymentService $paymentService
-    )
-    {
+    ) {
         $this->_loggerInterface = $loggerInterface;
         $this->_orderInterface = $orderInterface;
         $this->_ecpayLogisticFactory = $ecpayLogisticFactory;
@@ -64,19 +63,21 @@ class OrderService extends AbstractHelper
 
     /**
      * 訂單編號組合
-     * @param  string  $orderId
-     * @param  string  $prefix
+     *
+     * @param  string $orderId
+     * @param  string $prefix
      * @return string
      */
     public function getMerchantTradeNo($orderId, $prefix = '')
     {
-        $merchantTradeNo = $prefix . substr(str_pad($orderId, 8, '0', STR_PAD_LEFT), 0, 8) . 'SN' . substr(hash('sha256', (string) time()), -5) ;
+        $merchantTradeNo = $prefix . substr(str_pad($orderId, 8, '0', STR_PAD_LEFT), 0, 8) . 'SN' . substr(hash('sha256', (string) time()), -5);
         return substr($merchantTradeNo, 0, 20);
     }
 
     /**
      * 利用Payment MerchantTradeNo取得訂單資訊
-     * @param  string  $merchantTradeNo
+     *
+     * @param  string $merchantTradeNo
      * @return array
      */
     public function getOrderIdByPaymentMerchantTradeNo($merchantTradeNo)
@@ -86,14 +87,14 @@ class OrderService extends AbstractHelper
         $orderModel = $this->_orderFactory->create();
 
         $collection =  $orderModel
-                     ->getCollection()
-                     ->addFieldToFilter('ecpay_payment_merchant_trade_no', ['eq' => $merchantTradeNo])
-                     ->setOrder('entity_id','DESC')
-                     ->setCurPage(1)
-                     ->setPageSize(1);
+            ->getCollection()
+            ->addFieldToFilter('ecpay_payment_merchant_trade_no', ['eq' => $merchantTradeNo])
+            ->setOrder('entity_id', 'DESC')
+            ->setCurPage(1)
+            ->setPageSize(1);
 
         foreach($collection as $item){
-            $info = $item->getData() ;
+            $info = $item->getData();
         }
 
         return $info;
@@ -101,6 +102,7 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得可執行自動開立發票程序的訂單編號
+     *
      * @return array $ids
      */
     public function getOrderForInvoiceAutoProcedure()
@@ -112,7 +114,7 @@ class OrderService extends AbstractHelper
             ->addFieldToFilter('ecpay_invoice_tag', ['eq' => 0]);
 
         foreach($collection as $item){
-            $ids[] = $item->getData('entity_id') ;
+            $ids[] = $item->getData('entity_id');
         }
 
         return $ids;
@@ -120,6 +122,7 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得可執行自動開立物流訂單程序的訂單編號
+     *
      * @return array $ids
      */
     public function getOrderForLogisticAutoProcedure()
@@ -131,7 +134,7 @@ class OrderService extends AbstractHelper
             ->addFieldToFilter('ecpay_shipping_tag', ['eq' => 0]);
 
         foreach($collection as $item){
-            $ids[] = $item->getData('entity_id') ;
+            $ids[] = $item->getData('entity_id');
         }
 
         return $ids;
@@ -139,8 +142,9 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得訂單
-     * @param  string  $orderId
-     * @param  int     $type
+     *
+     * @param  string $orderId
+     * @param  int    $type
      * @return Order
      */
     public function getOrder($orderId, $type = 0)
@@ -159,7 +163,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得實際的訂單編號
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getRealOrderId($orderId)
@@ -169,7 +174,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得訂單建立時間
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getCreatedAt($orderId)
@@ -179,7 +185,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得訂單狀態
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getStatus($orderId)
@@ -189,7 +196,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得訂單的 protect code 欄位
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getProtectCode($orderId)
@@ -199,7 +207,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得付款方式
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getPaymentMethod($orderId)
@@ -212,7 +221,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得額外資訊
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getAdditionalInformation($orderId)
@@ -225,7 +235,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得幣別
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getOrderCurrencyCode($orderId)
@@ -235,7 +246,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得訂單折扣金額
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getBaseDiscountAmount($orderId)
@@ -245,7 +257,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得訂單物流金額
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getBaseShippingAmount($orderId)
@@ -255,7 +268,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得訂單小計金額(未稅)
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getBaseSubtotal($orderId)
@@ -265,7 +279,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得訂單總金額 - store base currency grand total
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getBaseGrandTotal($orderId)
@@ -275,7 +290,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得訂單總金額(GrandTotal)
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getGrandTotal($orderId)
@@ -285,7 +301,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得訂單總金額(BaseTotalPaid)
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getBaseTotalPaid($orderId)
@@ -295,7 +312,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得訂單總金額(TotalPaid)
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getTotalPaid($orderId)
@@ -305,7 +323,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得訂單重量
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getWeight($orderId)
@@ -315,7 +334,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得訂購人姓名
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getCustomerFirstname($orderId)
@@ -325,7 +345,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得訂購人姓名
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getCustomerLastname($orderId)
@@ -335,7 +356,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得訂購人Email
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getCustomerEmail($orderId)
@@ -345,7 +367,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得帳單地址
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return class
      */
     public function getBillingAddress($orderId)
@@ -355,7 +378,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得帳單城市
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getBillingCity($orderId)
@@ -365,7 +389,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得帳單區域
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getBillingRegion($orderId)
@@ -375,7 +400,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得帳單郵遞區號
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getBillingPostcode($orderId)
@@ -385,7 +411,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得帳單街道
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getBillingStreet($orderId)
@@ -397,7 +424,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得帳單收件人
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getBillingName($orderId)
@@ -410,7 +438,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得帳單連絡電話
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getBillingTelephone($orderId)
@@ -420,7 +449,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得帳單電子郵件
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return class
      */
     public function getBillingEmail($orderId)
@@ -430,7 +460,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得帳單公司名稱
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return class
      */
     public function getBillingCompany($orderId)
@@ -440,7 +471,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得收件人
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getShippingName($orderId)
@@ -453,7 +485,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得收件人電話
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getShippingTelephone($orderId)
@@ -463,7 +496,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得收件人郵遞區號
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getShippingPostcode($orderId)
@@ -473,7 +507,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得收件人街道
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getShippingStreet($orderId)
@@ -485,8 +520,9 @@ class OrderService extends AbstractHelper
 
     /**
      * Get formatted order created date in store timezone
-     * @param  string   $orderId
-     * @param  string   $format
+     *
+     * @param  string $orderId
+     * @param  string $format
      * @return string
      */
     public function getCreatedAtFormatted($orderId, $format)
@@ -496,22 +532,24 @@ class OrderService extends AbstractHelper
 
     /**
      * 寫入備註
-     * @param  string  $orderId
-     * @param  boolean  $comment
-     * @param  boolean  $status
-     * @param  boolean  $isVisibleOnFront
+     *
+     * @param string  $orderId
+     * @param boolean $comment
+     * @param boolean $status
+     * @param boolean $isVisibleOnFront
      */
     public function setOrderCommentForBack($orderId, $comment = '', $status = false, $isVisibleOnFront = false)
     {
         $order = $this->getOrder($orderId);
         $order->addCommentToStatusHistory($comment, $status, $isVisibleOnFront);
-        $order->save() ;
+        $order->save();
     }
 
     /**
      * 更新訂單狀態
-     * @param  string  $orderId
-     * @param  string  $state
+     *
+     * @param string $orderId
+     * @param string $state
      */
     public function setOrderState($orderId, $state)
     {
@@ -522,7 +560,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得訂單狀態
-     * @param  string  $orderId
+     *
+     * @param string $orderId
      */
     public function getOrderState($orderId)
     {
@@ -532,8 +571,9 @@ class OrderService extends AbstractHelper
 
     /**
      * 更新訂單狀態
-     * @param  string  $orderId
-     * @param  string  $status
+     *
+     * @param string $orderId
+     * @param string $status
      */
     public function setOrderStatus($orderId, $status)
     {
@@ -544,20 +584,22 @@ class OrderService extends AbstractHelper
 
     /**
      * 更新訂單欄位
-     * @param  string  $orderId
-     * @param  string  $key
-     * @param  string  $value
+     *
+     * @param string $orderId
+     * @param string $key
+     * @param string $value
      */
     public function setOrderData($orderId, $key = '', $value = '')
     {
         $order = $this->getOrder($orderId);
         $order->setData($key, $value);
-        $order->save() ;
+        $order->save();
     }
 
     /**
      * 利用訂單編號取出訂購商品
-     * @param  string   $orderId
+     *
+     * @param  string $orderId
      * @return array    $results
      */
     public function getSalesOrderItemByOrderId($orderId)
@@ -567,7 +609,7 @@ class OrderService extends AbstractHelper
         $connection = $resource->getConnection();
 
         $select = $connection->select()
-            ->from(['soi' => 'sales_order_item'],['name'])
+            ->from(['soi' => 'sales_order_item'], ['name'])
             ->where("soi.order_id = :order_id");
 
         $bind = ['order_id' => $orderId];
@@ -582,7 +624,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得發票資訊
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayInvoiceCarruerType($orderId)
@@ -592,7 +635,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得發票資訊
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getecpayInvoiceType($orderId)
@@ -602,7 +646,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得發票資訊
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayInvoiceCarruerNum($orderId)
@@ -612,7 +657,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得發票資訊
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayInvoiceLoveCode($orderId)
@@ -622,7 +668,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得發票資訊
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayInvoiceCustomerIdentifier($orderId)
@@ -632,7 +679,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得發票資訊(公司抬頭)
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayInvoiceCustomerCompany($orderId)
@@ -642,7 +690,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得發票開立旗標 0.未開立 1.已開立
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayInvoiceTag($orderId)
@@ -652,7 +701,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得發票開立旗標 1.一般開立 2.延遲開立
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayInvoiceIssueType($orderId)
@@ -662,7 +712,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得發票交易單號
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayInvoiceOdSob($orderId)
@@ -672,7 +723,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得發票號碼
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayInvoiceNumber($orderId)
@@ -682,7 +734,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得發票開立時間
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayInvoiceDate($orderId)
@@ -692,7 +745,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得發票隨機碼
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayInvoiceRandomNumber($orderId)
@@ -702,7 +756,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得發票自動開立程序
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayInvoiceAutoTag($orderId)
@@ -712,7 +767,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 利用商家自訂訂單編號找出訂單
-     * @param  string   $invoiceOdSob
+     *
+     * @param  string $invoiceOdSob
      * @return array    $results
      */
     public function getOrderByEcpayInvoiceOdSob($invoiceOdSob)
@@ -722,7 +778,7 @@ class OrderService extends AbstractHelper
         $connection = $resource->getConnection();
 
         $select = $connection->select()
-            ->from(['so' => 'sales_order'],['*'])
+            ->from(['so' => 'sales_order'], ['*'])
             ->where("so.ecpay_invoice_od_sob = :ecpay_invoice_od_sob");
 
         $bind = ['ecpay_invoice_od_sob' => $invoiceOdSob];
@@ -735,7 +791,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 執行Magento本身的開立發票程序
-     * @param  string   $orderId
+     *
+     * @param  string $orderId
      * @return array    $results
      */
     public function setOrderInvoice($orderId)
@@ -775,7 +832,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得物流方式
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getShippingMethod($orderId)
@@ -785,7 +843,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得物流方式組合名稱
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getShippingDescription($orderId)
@@ -795,7 +854,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得超商店舖編號
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayLogisticCvsStoreId($orderId)
@@ -805,7 +865,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得超商店舖名稱
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayLogisticCvsStoreName($orderId)
@@ -815,7 +876,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得超商店舖地址
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayLogisticCvsStoreAddress($orderId)
@@ -825,7 +887,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得超商店舖電話
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayLogisticCvsStoreTelephone($orderId)
@@ -835,7 +898,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得物流單自動開立程序
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayLogisticAutoTag($orderId)
@@ -845,7 +909,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得綠界物流單建立旗標 0.未建立 1.已建立
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayShippingTag($orderId)
@@ -855,7 +920,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得綠界物流單資訊
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayLogisticInfo($orderId)
@@ -865,14 +931,14 @@ class OrderService extends AbstractHelper
         $ecpayLogisticModel = $this->_ecpayLogisticFactory->create();
 
         $collection =  $ecpayLogisticModel
-                     ->getCollection()
-                     ->addFieldToFilter('order_id', ['eq' => $orderId])
-                     ->setOrder('entity_id','DESC')
-                     ->setCurPage(1)
-                     ->setPageSize(1);
+            ->getCollection()
+            ->addFieldToFilter('order_id', ['eq' => $orderId])
+            ->setOrder('entity_id', 'DESC')
+            ->setCurPage(1)
+            ->setPageSize(1);
 
         foreach($collection as $item){
-            $info = $item->getData() ;
+            $info = $item->getData();
         }
 
         return $info;
@@ -880,7 +946,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 利用MerchantTradeNo取得綠界物流單資訊
-     * @param  string  $MerchantTradeNo
+     *
+     * @param  string $MerchantTradeNo
      * @return string
      */
     public function getEcpayLogisticInfoByMerchantTradeNo($MerchantTradeNo)
@@ -890,14 +957,14 @@ class OrderService extends AbstractHelper
         $ecpayLogisticModel = $this->_ecpayLogisticFactory->create();
 
         $collection =  $ecpayLogisticModel
-                     ->getCollection()
-                     ->addFieldToFilter('merchant_trade_no', ['eq' => $MerchantTradeNo])
-                     ->setOrder('entity_id','DESC')
-                     ->setCurPage(1)
-                     ->setPageSize(1);
+            ->getCollection()
+            ->addFieldToFilter('merchant_trade_no', ['eq' => $MerchantTradeNo])
+            ->setOrder('entity_id', 'DESC')
+            ->setCurPage(1)
+            ->setPageSize(1);
 
         foreach($collection as $item){
-            $info = $item->getData() ;
+            $info = $item->getData();
         }
 
         return $info;
@@ -905,7 +972,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 執行Magento本身的物流程序
-     * @param  string   $orderId
+     *
+     * @param  string $orderId
      * @return array    $results
      */
     public function setOrderShip($orderId)
@@ -957,9 +1025,10 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得Ship ID
-     * @param  string  $orderId
-     * @param  string  $key
-     * @param  string  $value
+     *
+     * @param string $orderId
+     * @param string $key
+     * @param string $value
      */
     public function getShipmentId($orderId)
     {
@@ -973,7 +1042,7 @@ class OrderService extends AbstractHelper
             $shipmentId = $shipment->getIncrementId();
         }
 
-        $this->_loggerInterface->debug('OrderService getShipmentId shipmentId:'. print_r($shipmentId,true));
+        $this->_loggerInterface->debug('OrderService getShipmentId shipmentId:'. print_r($shipmentId, true));
         return $shipmentId ;
     }
 
@@ -981,7 +1050,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得綠界金流資訊
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayPaymentInfo($orderId)
@@ -991,14 +1061,14 @@ class OrderService extends AbstractHelper
         $ecpayPaymentInfoModel = $this->_ecpayPaymentInfoFactory->create();
 
         $collection =  $ecpayPaymentInfoModel
-                     ->getCollection()
-                     ->addFieldToFilter('order_id', ['eq' => $orderId])
-                     ->setOrder('entity_id','DESC')
-                     ->setCurPage(1)
-                     ->setPageSize(1);
+            ->getCollection()
+            ->addFieldToFilter('order_id', ['eq' => $orderId])
+            ->setOrder('entity_id', 'DESC')
+            ->setCurPage(1)
+            ->setPageSize(1);
 
         foreach($collection as $item){
-            $info = $item->getData() ;
+            $info = $item->getData();
         }
 
         return $info;
@@ -1006,8 +1076,9 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得綠界金流資訊內容
-     * @param  string  $orderId
-     * @param  string  $paymentMethod
+     *
+     * @param  string $orderId
+     * @param  string $paymentMethod
      * @return array   $paymentInfo
      */
     public function getEcpayPaymentInfoContent($orderId, $paymentMethod)
@@ -1018,54 +1089,54 @@ class OrderService extends AbstractHelper
         $paymentInfoData = $this->getEcpayPaymentInfo($orderId);
         if (!empty($paymentInfoData)) {
             switch ($paymentMethod) {
-                case 'ecpay_atm_gateway':
-                    $paymentInfo = [
-                        [
-                            'key' => __('Bank code'),
-                            'val' => $paymentInfoData['bank_code']
-                        ],
-                        [
-                            'key' => __('ATM No'),
-                            'val' => implode(' ', str_split($paymentInfoData['vaccount'], 4))
-                        ],
-                        [
-                            'key' => __('Payment deadline'),
-                            'val' => $paymentInfoData['expire_date']
-                        ],
-                    ];
-                    break;
-                case 'ecpay_cvs_gateway':
-                    $paymentInfo = [
-                        [
-                            'key' => __('CVS No'),
-                            'val' => $paymentInfoData['payment_no']
-                        ],
-                        [
-                            'key' => __('Payment deadline'),
-                            'val' => $paymentInfoData['expire_date']
-                        ],
-                    ];
-                    break;
-                case 'ecpay_barcode_gateway':
-                    $paymentInfo = [
-                        [
-                            'key' => __('Barcode one'),
-                            'val' => $paymentInfoData['barcode1']
-                        ],
-                        [
-                            'key' => __('Barcode two'),
-                            'val' => $paymentInfoData['barcode2']
-                        ],
-                        [
-                            'key' => __('Barcode three'),
-                            'val' => $paymentInfoData['barcode3']
-                        ],
-                        [
-                            'key' => __('Payment deadline'),
-                            'val' => $paymentInfoData['expire_date']
-                        ],
-                    ];
-                    break;
+            case 'ecpay_atm_gateway':
+                $paymentInfo = [
+                    [
+                        'key' => __('Bank code'),
+                        'val' => $paymentInfoData['bank_code']
+                    ],
+                    [
+                        'key' => __('ATM No'),
+                        'val' => implode(' ', str_split($paymentInfoData['vaccount'], 4))
+                    ],
+                    [
+                        'key' => __('Payment deadline'),
+                        'val' => $paymentInfoData['expire_date']
+                    ],
+                ];
+                break;
+            case 'ecpay_cvs_gateway':
+                $paymentInfo = [
+                    [
+                        'key' => __('CVS No'),
+                        'val' => $paymentInfoData['payment_no']
+                    ],
+                    [
+                        'key' => __('Payment deadline'),
+                        'val' => $paymentInfoData['expire_date']
+                    ],
+                ];
+                break;
+            case 'ecpay_barcode_gateway':
+                $paymentInfo = [
+                    [
+                        'key' => __('Barcode one'),
+                        'val' => $paymentInfoData['barcode1']
+                    ],
+                    [
+                        'key' => __('Barcode two'),
+                        'val' => $paymentInfoData['barcode2']
+                    ],
+                    [
+                        'key' => __('Barcode three'),
+                        'val' => $paymentInfoData['barcode3']
+                    ],
+                    [
+                        'key' => __('Payment deadline'),
+                        'val' => $paymentInfoData['expire_date']
+                    ],
+                ];
+                break;
             }
         }
 
@@ -1073,15 +1144,15 @@ class OrderService extends AbstractHelper
         $additionalInformation = $this->getAdditionalInformation($orderId);
         if (!empty($additionalInformation)) {
             switch ($paymentMethod) {
-                case 'ecpay_credit_installment_gateway':
-                    $creditInstallment = isset($additionalInformation['ecpay_credit_installment']) ? $this->_paymentService->getCreditInstallmentName($additionalInformation['ecpay_credit_installment']) : '';
-                    $paymentInfo = [
-                        [
-                            'key' => __('Credit installment'),
-                            'val' => $creditInstallment
-                        ],
-                    ];
-                    break;
+            case 'ecpay_credit_installment_gateway':
+                $creditInstallment = isset($additionalInformation['ecpay_credit_installment']) ? $this->_paymentService->getCreditInstallmentName($additionalInformation['ecpay_credit_installment']) : '';
+                $paymentInfo = [
+                    [
+                        'key' => __('Credit installment'),
+                        'val' => $creditInstallment
+                    ],
+                ];
+                break;
             }
         }
 
@@ -1090,7 +1161,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 利用MerchantTradeNo取得綠界金流資訊
-     * @param  string  $MerchantTradeNo
+     *
+     * @param  string $MerchantTradeNo
      * @return string
      */
     public function getEcpayPaymentInfoByMerchantTradeNo($MerchantTradeNo)
@@ -1100,14 +1172,14 @@ class OrderService extends AbstractHelper
         $ecpayPaymentInfoModel = $this->_ecpayPaymentInfoFactory->create();
 
         $collection =  $ecpayPaymentInfoModel
-                     ->getCollection()
-                     ->addFieldToFilter('merchant_trade_no', ['eq' => $MerchantTradeNo])
-                     ->setOrder('entity_id','DESC')
-                     ->setCurPage(1)
-                     ->setPageSize(1);
+            ->getCollection()
+            ->addFieldToFilter('merchant_trade_no', ['eq' => $MerchantTradeNo])
+            ->setOrder('entity_id', 'DESC')
+            ->setCurPage(1)
+            ->setPageSize(1);
 
         foreach($collection as $item){
-            $info = $item->getData() ;
+            $info = $item->getData();
         }
 
         return $info;
@@ -1115,7 +1187,8 @@ class OrderService extends AbstractHelper
 
     /**
      * 取得付款完成狀態
-     * @param  string  $orderId
+     *
+     * @param  string $orderId
      * @return string
      */
     public function getEcpayPaymentCompleteTag($orderId)

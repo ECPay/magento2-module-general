@@ -24,7 +24,7 @@ class EncryptionsHelper extends AbstractHelper
     /**
      * 編碼 URL 字串
      *
-     * @param  string  $data
+     * @param  string $data
      * @return string
      */
     public function urlEncode($data)
@@ -42,7 +42,7 @@ class EncryptionsHelper extends AbstractHelper
     /**
      * 解碼 URL 字串
      *
-     * @param  string  $data
+     * @param  string $data
      * @return string
      */
     public function urlDecode($data)
@@ -53,9 +53,9 @@ class EncryptionsHelper extends AbstractHelper
     /**
      * 資料轉 JSON
      *
-     * @param  array    $data
-     * @param  integer  $options
-     * @param  integer  $depth
+     * @param  array   $data
+     * @param  integer $options
+     * @param  integer $depth
      * @return json
      */
     public function jsonEncode($data, $options = 0, $depth = 512)

@@ -19,12 +19,12 @@ class PaymentInfo extends Info
 
     /**
      * @param TemplateContext $context
-     * @param Registry $registry
-     * @param PaymentHelper $paymentHelper
+     * @param Registry        $registry
+     * @param PaymentHelper   $paymentHelper
      * @param AddressRenderer $addressRenderer
-     * @param OrderService $orderService
-     * @param PaymentService $paymentService
-     * @param array $data
+     * @param OrderService    $orderService
+     * @param PaymentService  $paymentService
+     * @param array           $data
      */
     public function __construct(
         TemplateContext $context,

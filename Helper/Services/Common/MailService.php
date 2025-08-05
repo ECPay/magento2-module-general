@@ -43,6 +43,7 @@ class MailService extends AbstractHelper
 
     /**
      * 發送 Email
+     *
      * @param array $mailData
      */
     public function send(array $mailData)

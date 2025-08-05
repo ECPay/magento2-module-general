@@ -5,6 +5,6 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 {
     public function _construct()
     {
-        $this->_init("Ecpay\General\Model\EcpayLogistic","Ecpay\General\Model\ResourceModel\EcpayLogistic");
+        $this->_init("Ecpay\General\Model\EcpayLogistic", "Ecpay\General\Model\ResourceModel\EcpayLogistic");
     }
 }

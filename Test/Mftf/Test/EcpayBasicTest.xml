@@ -10,5 +10,14 @@
             <severity value="MINOR"/>
             <group value="Ecpay_General"/>
         </annotations>
+
+        <amOnPage url="backend"/>
+
+        <fillField selector="{{AdminLoginUsernameField}}" userInput="{{AdminUsername}}"/>
+        <fillField selector="{{AdminLoginPasswordField}}" userInput="{{AdminPassword}}"/>
+        <click selector="{{AdminLoginButton}}"/>
+        <waitForPageLoad/>
+
+        <see element="{{AdminDashboardPageTitleBlock}}"/>
     </test>
 </tests>

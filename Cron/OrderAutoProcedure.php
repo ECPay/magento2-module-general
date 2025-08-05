@@ -30,9 +30,7 @@ class OrderAutoProcedure
 
     public function __construct(
         LoggerInterface $loggerInterface,
-
         EcpayLogisticFactory $ecpayLogisticFactory,
-
         EncryptionsService $encryptionsService,
         OrderService $orderService,
         MainService $mainService,
@@ -59,7 +57,7 @@ class OrderAutoProcedure
         // 取得需要處理的訂單編號
 
         // 判斷發票是否啟用自動開立
-        $ecpayInvoiceAuto = $this->_mainService->getInvoiceConfig('enabled_invoice_auto') ;
+        $ecpayInvoiceAuto = $this->_mainService->getInvoiceConfig('enabled_invoice_auto');
         $this->_loggerInterface->debug('OrderAutoProcedure ecpayInvoiceAuto:'. print_r($ecpayInvoiceAuto, true));
 
         $invoiceOrders = ($ecpayInvoiceAuto == 1) ? $this->_orderService->getOrderForInvoiceAutoProcedure() : [];
@@ -70,14 +68,14 @@ class OrderAutoProcedure
         $this->_loggerInterface->debug('OrderAutoProcedure ecpayEnableLogistic:'. print_r($ecpayEnableLogistic, true));
 
         // 判斷物流是否啟用自動開立
-        $ecpayLogisticAuto = $this->_mainService->getLogisticConfig('enable_logistic_auto') ;
+        $ecpayLogisticAuto = $this->_mainService->getLogisticConfig('enable_logistic_auto');
         $this->_loggerInterface->debug('OrderAutoProcedure ecpayLogisticAuto:'. print_r($ecpayLogisticAuto, true));
 
         $logisticOrders = ($ecpayEnableLogistic == 1 && $ecpayLogisticAuto == 1) ? $this->_orderService->getOrderForLogisticAutoProcedure() : [];
         $this->_loggerInterface->debug('OrderAutoProcedure logisticOrders:' . print_r($logisticOrders, true));
 
         // 訂單編號合併
-        $orders = array_unique(array_merge($invoiceOrders , $logisticOrders));
+        $orders = array_unique(array_merge($invoiceOrders, $logisticOrders));
         $this->_loggerInterface->debug('OrderAutoProcedure orders:' . print_r($orders, true));
 
         foreach ($orders as $key => $orderId) {
@@ -109,13 +107,13 @@ class OrderAutoProcedure
         $this->_loggerInterface->debug('OrderAutoProcedure invoiceIssue result:'. print_r($result, true));
 
         // 關閉自動開立
-        $this->_orderService->setOrderData($orderId, 'ecpay_invoice_auto_tag', 0) ;
+        $this->_orderService->setOrderData($orderId, 'ecpay_invoice_auto_tag', 0);
         if ($result['code'] !== '0999') {
             // 回傳結果寫入備註
             $comment = '自動開立發票訂單(失敗)，請重新手動開立。錯誤代碼：' . $result['code'];
             $status = false ;
             $isVisibleOnFront = false ;
-            $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront) ;
+            $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront);
         }
     }
 
@@ -133,13 +131,13 @@ class OrderAutoProcedure
         $this->_loggerInterface->debug('OrderAutoProcedure logisticCreateOrder result:' . print_r($result, true));
 
         // 關閉自動開立
-        $this->_orderService->setOrderData($orderId, 'ecpay_logistic_auto_tag', 0) ;
+        $this->_orderService->setOrderData($orderId, 'ecpay_logistic_auto_tag', 0);
         if ($result['code'] !== '0999') {
             // 回傳結果寫入備註
             $comment = '自動建立物流訂單(失敗)，請重新手動建立。錯誤代碼：' . $result['code'];
             $status = false ;
             $isVisibleOnFront = false ;
-            $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront) ;
+            $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront);
         }
     }
 }

@@ -41,15 +41,13 @@ class LogisticStatusResponse extends Action implements CsrfAwareActionInterface
         LoggerInterface $loggerInterface,
         UrlInterface $urlInterface,
         ResponseFactory $responseFactory,
-
         EncryptionsService $encryptionsService,
         OrderService $orderService,
         MainService $mainService,
         InvoiceService $invoiceService,
         LogisticService $logisticService,
         PaymentService $paymentService
-    )
-    {
+    ) {
         $this->_requestInterface = $requestInterface;
         $this->_loggerInterface = $loggerInterface;
         $this->_urlInterface = $urlInterface;
@@ -68,30 +66,30 @@ class LogisticStatusResponse extends Action implements CsrfAwareActionInterface
     public function execute()
     {
         // 取出是否為測試模式
-        $logisticStage = $this->_mainService->getLogisticConfig('enabled_logistic_stage') ;
-        $this->_loggerInterface->debug('LogisticStatusResponse logisticStage:'. print_r($logisticStage,true));
+        $logisticStage = $this->_mainService->getLogisticConfig('enabled_logistic_stage');
+        $this->_loggerInterface->debug('LogisticStatusResponse logisticStage:'. print_r($logisticStage, true));
 
          // 取出CvsType
-        $logisticCvsType = $this->_mainService->getLogisticConfig('logistic_cvs_type') ;
-        $this->_loggerInterface->debug('LogisticStatusResponse logisticCvsType:'. print_r($logisticCvsType,true));
+        $logisticCvsType = $this->_mainService->getLogisticConfig('logistic_cvs_type');
+        $this->_loggerInterface->debug('LogisticStatusResponse logisticCvsType:'. print_r($logisticCvsType, true));
 
         // 判斷測試模式
-        if($logisticStage == 1){
+        if($logisticStage == 1) {
 
             // 取出 KEY IV MID (測試模式)
             $accountInfo = $this->_logisticService->getStageAccount($logisticCvsType);
-            $this->_loggerInterface->debug('LogisticStatusResponse accountInfo:'. print_r($accountInfo,true));
+            $this->_loggerInterface->debug('LogisticStatusResponse accountInfo:'. print_r($accountInfo, true));
 
         } else {
 
             // 取出 KEY IV MID (正式模式)
-            $logisticMerchantId = $this->_mainService->getLogisticConfig('logistic_mid') ;
-            $logisticHashKey    = $this->_mainService->getLogisticConfig('logistic_hashkey') ;
-            $logisticHashIv     = $this->_mainService->getLogisticConfig('logistic_hashiv') ;
+            $logisticMerchantId = $this->_mainService->getLogisticConfig('logistic_mid');
+            $logisticHashKey    = $this->_mainService->getLogisticConfig('logistic_hashkey');
+            $logisticHashIv     = $this->_mainService->getLogisticConfig('logistic_hashiv');
 
-            $this->_loggerInterface->debug('LogisticStatusResponse logisticMerchantId:'. print_r($logisticMerchantId,true));
-            $this->_loggerInterface->debug('LogisticStatusResponse logisticHashKey:'. print_r($logisticHashKey,true));
-            $this->_loggerInterface->debug('LogisticStatusResponse logisticHashIv:'. print_r($logisticHashIv,true));
+            $this->_loggerInterface->debug('LogisticStatusResponse logisticMerchantId:'. print_r($logisticMerchantId, true));
+            $this->_loggerInterface->debug('LogisticStatusResponse logisticHashKey:'. print_r($logisticHashKey, true));
+            $this->_loggerInterface->debug('LogisticStatusResponse logisticHashIv:'. print_r($logisticHashIv, true));
 
             $accountInfo = [
                 'MerchantId' => $logisticMerchantId,
@@ -103,24 +101,26 @@ class LogisticStatusResponse extends Action implements CsrfAwareActionInterface
         // 透過SDK取回
         try {
             
-            $factory = new Factory([
+            $factory = new Factory(
+                [
                 'hashKey'       => $accountInfo['HashKey'],
                 'hashIv'        => $accountInfo['HashIv'],
                 'hashMethod'    => 'md5',
-            ]);
+                ]
+            );
             
             $checkoutResponse = $factory->create(VerifiedArrayResponse::class);
             $postData = $this->_requestInterface->getPostValue();
             $resposeInfo = $checkoutResponse->get($postData);
-            $this->_loggerInterface->debug('LogisticStatusResponse resposeInfo:'. print_r($resposeInfo,true));
+            $this->_loggerInterface->debug('LogisticStatusResponse resposeInfo:'. print_r($resposeInfo, true));
 
-            if(isset($resposeInfo['RtnCode'])){
+            if(isset($resposeInfo['RtnCode'])) {
 
                 // 透過MerchantTradeNo取出OrderId
                 $orderInfo = $this->_orderService->getEcpayLogisticInfoByMerchantTradeNo($resposeInfo['MerchantTradeNo']);
-                $this->_loggerInterface->debug('LogisticStatusResponse orderInfo:'. print_r($orderInfo,true));
+                $this->_loggerInterface->debug('LogisticStatusResponse orderInfo:'. print_r($orderInfo, true));
 
-                if(isset($orderInfo['order_id'])){
+                if(isset($orderInfo['order_id'])) {
 
                     // 回傳結果寫入備註
                     $orderId = (int) $orderInfo['order_id'];

@@ -7,6 +7,6 @@ class EcpayPaymentInfo extends \Magento\Framework\Model\ResourceModel\Db\Abstrac
 
     public function _construct()
     {
-    $this->_init("ecpay_payment_info", "entity_id");
+        $this->_init("ecpay_payment_info", "entity_id");
     }
 }

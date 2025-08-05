@@ -22,9 +22,10 @@ class GeneralHelper extends AbstractHelper
     /**
      * @param DeploymentConfig $deploymentConfig
      */
-	public function __construct(DeploymentConfig $deploymentConfig) {
-		$this->_deploymentConfig = $deploymentConfig;
-	}
+    public function __construct(DeploymentConfig $deploymentConfig)
+    {
+        $this->_deploymentConfig = $deploymentConfig;
+    }
 
     /**
      * 取 env.php ecpay/general 資料
@@ -88,7 +89,7 @@ class GeneralHelper extends AbstractHelper
     /**
      * Generate a more truly "random" alpha-numeric string.
      *
-     * @param  int    $length
+     * @param  int $length
      * @return string
      */
     public function random($length = 16)

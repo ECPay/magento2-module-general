@@ -47,7 +47,7 @@ class ThankYou extends Template
         parent::__construct($context, $data);
 
         $this->orderId = $this->getOrderId();
-        $this->_loggerInterface->debug('ThankYou Block orderId:'. print_r($this->orderId,true));
+        $this->_loggerInterface->debug('ThankYou Block orderId:'. print_r($this->orderId, true));
     }
 
     /**
@@ -86,7 +86,7 @@ class ThankYou extends Template
         return [
             'real_order_id' => $this->_orderService->getRealOrderId($this->orderId),
             'created_at'    => $this->_orderService->getCreatedAt($this->orderId),
-            'amount'        => $this->_orderService->getBaseGrandTotal($this->orderId),
+            'amount'        => $this->getOrder()->formatPrice($this->_orderService->getBaseGrandTotal($this->orderId)),
             'state'         => $this->_orderService->getOrderState($this->orderId),
         ];
     }
@@ -100,18 +100,18 @@ class ThankYou extends Template
     {
         $paymentMethod = $this->_orderService->getPaymentMethod($this->orderId);
         $methodTitle = $this->getPayment()->getMethodInstance()->getTitle();
-        $this->_loggerInterface->debug('ThankYou Block paymentMethod:'. print_r($paymentMethod,true));
-        $this->_loggerInterface->debug('ThankYou Block methodTitle:'. print_r($methodTitle,true));
+        $this->_loggerInterface->debug('ThankYou Block paymentMethod:'. print_r($paymentMethod, true));
+        $this->_loggerInterface->debug('ThankYou Block methodTitle:'. print_r($methodTitle, true));
 
         $isEcpayPayment = $this->_paymentService->isEcpayPayment($paymentMethod);
-        $this->_loggerInterface->debug('ThankYou Block isEcpayPayment:'. print_r($isEcpayPayment,true));
+        $this->_loggerInterface->debug('ThankYou Block isEcpayPayment:'. print_r($isEcpayPayment, true));
 
         // 判斷是否為綠界金流
         $paymentInfo = [];
         if ($isEcpayPayment) {
             $paymentInfo = $this->_orderService->getEcpayPaymentInfoContent($this->orderId, $paymentMethod);
         }
-        $this->_loggerInterface->debug('ThankYou Block paymentInfo:'. print_r($paymentInfo,true));
+        $this->_loggerInterface->debug('ThankYou Block paymentInfo:'. print_r($paymentInfo, true));
 
         return [
             'is_ecpay_payment' => ($isEcpayPayment) ? 'Y' : 'N',
@@ -130,11 +130,11 @@ class ThankYou extends Template
         $shippingMethod = $this->_orderService->getShippingMethod($this->orderId);
         $shippingMethod = empty($shippingMethod) ? '' : $shippingMethod;
         $methodTitle = $this->_orderService->getShippingDescription($this->orderId);
-        $this->_loggerInterface->debug('ThankYou Block shippingMethod:'. print_r($shippingMethod,true));
-        $this->_loggerInterface->debug('ThankYou Block methodTitle:'. print_r($methodTitle,true));
+        $this->_loggerInterface->debug('ThankYou Block shippingMethod:'. print_r($shippingMethod, true));
+        $this->_loggerInterface->debug('ThankYou Block methodTitle:'. print_r($methodTitle, true));
 
         $isEcpayCvsLogistics = $this->_logisticService->isEcpayCvsLogistics($shippingMethod);
-        $this->_loggerInterface->debug('ThankYou Block isEcpayCvsLogistics:'. print_r($isEcpayCvsLogistics,true));
+        $this->_loggerInterface->debug('ThankYou Block isEcpayCvsLogistics:'. print_r($isEcpayCvsLogistics, true));
 
         // 判斷是否為綠界超商物流
         $cvsInfo = [];
@@ -169,12 +169,12 @@ class ThankYou extends Template
     private function getOrderId()
     {
         // 解密訂單編號
-        $enctyOrderId = $this->getRequest()->getParam('id') ;
-        $enctyOrderId = str_replace(' ', '+', $enctyOrderId) ;
-        $this->_loggerInterface->debug('ThankYou Block enctyOrderId:'. print_r($enctyOrderId,true));
+        $enctyOrderId = $this->getRequest()->getParam('id');
+        $enctyOrderId = str_replace(' ', '+', $enctyOrderId);
+        $this->_loggerInterface->debug('ThankYou Block enctyOrderId:'. print_r($enctyOrderId, true));
 
         $orderId      = $this->_encryptionsService->decrypt($enctyOrderId);
-        $this->_loggerInterface->debug('ThankYou Block orderId:'. print_r(intval($orderId),true));
+        $this->_loggerInterface->debug('ThankYou Block orderId:'. print_r(intval($orderId), true));
 
         return intval($orderId);
     }

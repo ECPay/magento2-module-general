@@ -7,13 +7,14 @@ use Magento\Framework\Setup\Patch\DataPatchInterface;
 
 class AddEcpayPendingPaymentStatus implements DataPatchInterface
 {
-	/**
+    /**
      * @var ModuleDataSetupInterface
      */
     private $moduleDataSetup;
 
     /**
      * AddEcpayPendingPaymentStatus constructor.
+     *
      * @param ModuleDataSetupInterface $moduleDataSetup
      */
     public function __construct(ModuleDataSetupInterface $moduleDataSetup)

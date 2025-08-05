@@ -41,15 +41,13 @@ class InvoiceDelayNotifyResponse extends Action implements CsrfAwareActionInterf
         LoggerInterface $loggerInterface,
         UrlInterface $urlInterface,
         ResponseFactory $responseFactory,
-
         EncryptionsService $encryptionsService,
         OrderService $orderService,
         MainService $mainService,
         InvoiceService $invoiceService,
         LogisticService $logisticService,
         PaymentService $paymentService
-    )
-    {
+    ) {
         $this->_requestInterface = $requestInterface;
         $this->_loggerInterface = $loggerInterface;
         $this->_urlInterface = $urlInterface;
@@ -69,33 +67,33 @@ class InvoiceDelayNotifyResponse extends Action implements CsrfAwareActionInterf
     {
         
         $invoiceInfo = $this->_requestInterface->getPostValue();
-        $this->_loggerInterface->debug('InvoiceDelayNotifyResponse invoiceInfo:'. print_r($invoiceInfo,true));
+        $this->_loggerInterface->debug('InvoiceDelayNotifyResponse invoiceInfo:'. print_r($invoiceInfo, true));
 
         // 利用od_sob解析出訂單編號
-        if(isset($invoiceInfo['od_sob']) && isset($invoiceInfo['tsr']) && !empty($invoiceInfo['tsr'])){
+        if(isset($invoiceInfo['od_sob']) && isset($invoiceInfo['tsr']) && !empty($invoiceInfo['tsr'])) {
 
             // 取出訂單資訊
             $orderInfo = $this->_orderService->getOrderByEcpayInvoiceOdSob($invoiceInfo['od_sob']);
-            $this->_loggerInterface->debug('InvoiceDelayNotifyResponse orderInfo:'. print_r($orderInfo,true));
+            $this->_loggerInterface->debug('InvoiceDelayNotifyResponse orderInfo:'. print_r($orderInfo, true));
 
             // 寫入訂單對應欄位
-            if(isset($orderInfo[0]['entity_id'])){
+            if(isset($orderInfo[0]['entity_id'])) {
 
                 $orderId = (int) $orderInfo[0]['entity_id'];
 
-                $this->_orderService->setOrderData($orderId, 'ecpay_invoice_number', $invoiceInfo['invoicenumber']) ;
+                $this->_orderService->setOrderData($orderId, 'ecpay_invoice_number', $invoiceInfo['invoicenumber']);
 
                 $InvoiceDate = $invoiceInfo['invoicedate'] .' '. $invoiceInfo['invoicetime'] ;
-                $this->_orderService->setOrderData($orderId, 'ecpay_invoice_date', $InvoiceDate) ;
+                $this->_orderService->setOrderData($orderId, 'ecpay_invoice_date', $InvoiceDate);
 
-                $this->_orderService->setOrderData($orderId, 'ecpay_invoice_random_number', $invoiceInfo['invoicecode']) ;
+                $this->_orderService->setOrderData($orderId, 'ecpay_invoice_random_number', $invoiceInfo['invoicecode']);
 
                 // 回傳資料寫入備註
                 $comment = '延遲開立成功，發票號碼：' . $invoiceInfo['invoicenumber'] . '，檢查碼：' . $invoiceInfo['invoicecode'] . '，交易單號：'. $invoiceInfo['od_sob']; 
                 $status = false ;
                 $isVisibleOnFront = false ;
 
-                $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront) ;
+                $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront);
 
                 // 回傳綠界成功狀態
                 return '1|OK';  

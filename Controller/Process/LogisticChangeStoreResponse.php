@@ -41,15 +41,13 @@ class LogisticChangeStoreResponse extends Action implements CsrfAwareActionInter
         LoggerInterface $loggerInterface,
         UrlInterface $urlInterface,
         ResponseFactory $responseFactory,
-
         EncryptionsService $encryptionsService,
         OrderService $orderService,
         MainService $mainService,
         InvoiceService $invoiceService,
         LogisticService $logisticService,
         PaymentService $paymentService
-    )
-    {
+    ) {
         $this->_requestInterface = $requestInterface;
         $this->_loggerInterface = $loggerInterface;
         $this->_urlInterface = $urlInterface;
@@ -69,15 +67,15 @@ class LogisticChangeStoreResponse extends Action implements CsrfAwareActionInter
     {
         // 接收門市資訊
         $storeInfo = $this->_requestInterface->getPostValue();
-        $this->_loggerInterface->debug('LogisticChangeStoreResponse storeInfo:'. print_r($storeInfo,true));
+        $this->_loggerInterface->debug('LogisticChangeStoreResponse storeInfo:'. print_r($storeInfo, true));
 
         // 解密訂單編號
-        $enctyOrderId = str_replace(' ', '+', $storeInfo['ExtraData']) ;
+        $enctyOrderId = str_replace(' ', '+', $storeInfo['ExtraData']);
         $orderId      = $this->_encryptionsService->decrypt($enctyOrderId);
         $orderId = (int) $orderId;
 
-        $this->_loggerInterface->debug('LogisticChangeStoreResponse enctyOrderId:'. print_r($enctyOrderId,true));
-        $this->_loggerInterface->debug('LogisticChangeStoreResponse orderId:'. print_r($orderId,true));
+        $this->_loggerInterface->debug('LogisticChangeStoreResponse enctyOrderId:'. print_r($enctyOrderId, true));
+        $this->_loggerInterface->debug('LogisticChangeStoreResponse orderId:'. print_r($orderId, true));
 
         // 判斷訂單是否允許更改
 
@@ -86,7 +84,7 @@ class LogisticChangeStoreResponse extends Action implements CsrfAwareActionInter
         $this->_loggerInterface->debug('LogisticChangeStoreResponse $ecpayShippingTag:'.$ecpayShippingTag);
 
         // 目前僅支援一張物流單
-        if($ecpayShippingTag == 1){
+        if($ecpayShippingTag == 1) {
             $response = $this->_responseFactory->create();
             $response->setHttpResponseCode(200); // 設置 HTTP 狀態碼
             $response->setBody('訂單已經建立，不允許修改門市'); // 設置回應的內容
@@ -99,12 +97,12 @@ class LogisticChangeStoreResponse extends Action implements CsrfAwareActionInter
         $CVSAddress     = isset($storeInfo['CVSAddress']) ? $storeInfo['CVSAddress'] : '';
         $CVSTelephone   = isset($storeInfo['CVSTelephone']) ? $storeInfo['CVSTelephone'] : '';
 
-        if(!empty($CVSStoreID)){
+        if(!empty($CVSStoreID)) {
 
-            $this->_orderService->setOrderData($orderId, 'ecpay_logistic_cvs_store_id', $CVSStoreID) ;
-            $this->_orderService->setOrderData($orderId, 'ecpay_logistic_cvs_store_name', $CVSStoreName) ;
-            $this->_orderService->setOrderData($orderId, 'ecpay_logistic_cvs_store_address', $CVSAddress) ;
-            $this->_orderService->setOrderData($orderId, 'ecpay_logistic_cvs_store_telephone', $CVSTelephone) ;
+            $this->_orderService->setOrderData($orderId, 'ecpay_logistic_cvs_store_id', $CVSStoreID);
+            $this->_orderService->setOrderData($orderId, 'ecpay_logistic_cvs_store_name', $CVSStoreName);
+            $this->_orderService->setOrderData($orderId, 'ecpay_logistic_cvs_store_address', $CVSAddress);
+            $this->_orderService->setOrderData($orderId, 'ecpay_logistic_cvs_store_telephone', $CVSTelephone);
 
             // todo:異動物流地址
             
@@ -127,7 +125,7 @@ class LogisticChangeStoreResponse extends Action implements CsrfAwareActionInter
         $status = false ;
         $isVisibleOnFront = false ;
 
-        $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront) ;
+        $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront);
     }
 
     /**

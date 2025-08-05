@@ -41,7 +41,6 @@ class LogisticMapResponse extends Action implements CsrfAwareActionInterface
         LoggerInterface $loggerInterface,
         UrlInterface $urlInterface,
         ResponseFactory $responseFactory,
-
         EncryptionsService $encryptionsService,
         OrderService $orderService,
         ToEcpayService $toEcpayService,
@@ -50,8 +49,7 @@ class LogisticMapResponse extends Action implements CsrfAwareActionInterface
         LogisticService $logisticService,
         PaymentService $paymentService,
         CheckoutSession $checkoutSession
-    )
-    {
+    ) {
         $this->_requestInterface = $requestInterface;
         $this->_loggerInterface = $loggerInterface;
         $this->_urlInterface = $urlInterface;
@@ -73,19 +71,19 @@ class LogisticMapResponse extends Action implements CsrfAwareActionInterface
     {
         // 接收門市資訊
         $storeInfo = $this->_requestInterface->getPostValue();
-        $this->_loggerInterface->debug('MapResponse storeInfo:'. print_r($storeInfo,true));
+        $this->_loggerInterface->debug('MapResponse storeInfo:'. print_r($storeInfo, true));
 
         // 解密訂單編號
-        $enctyOrderId = $this->getRequest()->getParam('id') ;
-        $enctyOrderId = str_replace(' ', '+', $enctyOrderId) ;
+        $enctyOrderId = $this->getRequest()->getParam('id');
+        $enctyOrderId = str_replace(' ', '+', $enctyOrderId);
         $orderId      = intval($this->_encryptionsService->decrypt($enctyOrderId));
 
-        $this->_loggerInterface->debug('MapResponse enctyOrderId:'. print_r($enctyOrderId,true));
-        $this->_loggerInterface->debug('MapResponse orderId:'. print_r($orderId,true));
+        $this->_loggerInterface->debug('MapResponse enctyOrderId:'. print_r($enctyOrderId, true));
+        $this->_loggerInterface->debug('MapResponse orderId:'. print_r($orderId, true));
 
         // 驗證訂單資訊 (驗證物流方式)
         $shippingMethod = $this->_orderService->getShippingMethod($orderId);
-        $this->_loggerInterface->debug('MapResponse shippingMethod:'. print_r($shippingMethod,true));
+        $this->_loggerInterface->debug('MapResponse shippingMethod:'. print_r($shippingMethod, true));
 
         if ($this->_logisticService->isEcpayCvsLogistics($shippingMethod)) {
 
@@ -96,10 +94,10 @@ class LogisticMapResponse extends Action implements CsrfAwareActionInterface
             $CVSTelephone = isset($storeInfo['CVSTelephone']) ? $storeInfo['CVSTelephone'] : '';
 
             if (!empty($CVSStoreID)) {
-                $this->_orderService->setOrderData($orderId, 'ecpay_logistic_cvs_store_id', $CVSStoreID) ;
-                $this->_orderService->setOrderData($orderId, 'ecpay_logistic_cvs_store_name', $CVSStoreName) ;
-                $this->_orderService->setOrderData($orderId, 'ecpay_logistic_cvs_store_address', $CVSAddress) ;
-                $this->_orderService->setOrderData($orderId, 'ecpay_logistic_cvs_store_telephone', $CVSTelephone) ;
+                $this->_orderService->setOrderData($orderId, 'ecpay_logistic_cvs_store_id', $CVSStoreID);
+                $this->_orderService->setOrderData($orderId, 'ecpay_logistic_cvs_store_name', $CVSStoreName);
+                $this->_orderService->setOrderData($orderId, 'ecpay_logistic_cvs_store_address', $CVSAddress);
+                $this->_orderService->setOrderData($orderId, 'ecpay_logistic_cvs_store_telephone', $CVSTelephone);
 
                 // 更新訂單寄送資訊
                 $resource = $this->_objectManager->get('Magento\Framework\App\ResourceConnection');
@@ -107,11 +105,11 @@ class LogisticMapResponse extends Action implements CsrfAwareActionInterface
                 $dbWrite->update(
                     $resource->getTableName('sales_order_address'),
                     [
-                        'region'    => NULL,
+                        'region'    => null,
                         'postcode'  => $CVSStoreID,
                         'street'    => $CVSAddress . '(門市地址)',
                         'city'      => $CVSStoreName,
-                        'company'   => NULL,
+                        'company'   => null,
                     ],
                     [
                         'parent_id = ?'    => $orderId,
@@ -126,9 +124,9 @@ class LogisticMapResponse extends Action implements CsrfAwareActionInterface
 
         // 判斷是否為綠界金流
         $paymentMethod = $this->_orderService->getPaymentMethod($orderId);
-        $this->_loggerInterface->debug('MapResponse paymentMethod:'. print_r($paymentMethod,true));
+        $this->_loggerInterface->debug('MapResponse paymentMethod:'. print_r($paymentMethod, true));
 
-        if ($this->_paymentService->isEcpayPayment($paymentMethod)){
+        if ($this->_paymentService->isEcpayPayment($paymentMethod)) {
 
             // 轉導到綠界金流執行程序組合FORM(帶ORDER_ID走) 
             $redirectUrl = $this->_urlInterface->getUrl('ecpaygeneral/Page/RedirectToEcpay');
@@ -141,7 +139,7 @@ class LogisticMapResponse extends Action implements CsrfAwareActionInterface
             $redirectUrl = $redirectUrl . '?id='. $enctyOrderId ;
         }
 
-        $this->_loggerInterface->debug('MapResponse $redirectUrl:'. print_r($redirectUrl,true));
+        $this->_loggerInterface->debug('MapResponse $redirectUrl:'. print_r($redirectUrl, true));
         $this->_responseFactory->create()->setRedirect($redirectUrl)->sendResponse();
     }
 

@@ -54,12 +54,14 @@ class RedirectToEcpay extends Template
     /**
      * 產生綠界金、物流表單後至前端 echo
      */
-    public function getFormHtml() {
+    public function getFormHtml()
+    {
         $enctyOrderId = $this->getRequest()->getParam('id');
         $formType = $this->getRequest()->getParam('type');
 
-        if ($formType == 'payment') $form = $this->_toEcpayService->preparePayment($enctyOrderId);
-        else $form = $this->_toEcpayService->prepareLogistic($enctyOrderId);
+        if ($formType == 'payment') { $form = $this->_toEcpayService->preparePayment($enctyOrderId);
+        } else { $form = $this->_toEcpayService->prepareLogistic($enctyOrderId);
+        }
 
         return $form;
     }

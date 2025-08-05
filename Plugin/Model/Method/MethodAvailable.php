@@ -29,8 +29,7 @@ class MethodAvailable
         MainService $mainService,
         LogisticService $logisticService,
         PaymentService $paymentService
-    )
-    {
+    ) {
         $this->_loggerInterface = $loggerInterface;
 
         $this->_storeManager = $storeManager;
@@ -41,8 +40,8 @@ class MethodAvailable
     }
 
     /**
-     * @param Magento\Payment\Model\MethodList $subject
-     * @param $result
+     * @param  Magento\Payment\Model\MethodList $subject
+     * @param  $result
      * @return array
      */
     public function afterGetAvailableMethods(MethodList $subject, $result)
@@ -54,47 +53,46 @@ class MethodAvailable
         // 如果使用綠界物流，判斷貨到付款付款方式
         $cashOnDeliveryTag = 1;
         $shippingMethod = $quote->getShippingAddress()->getShippingMethod();
-        $this->_loggerInterface->debug('MethodAvailable shippingMethod:'. print_r($shippingMethod,true));
+        $this->_loggerInterface->debug('MethodAvailable shippingMethod:'. print_r($shippingMethod, true));
 
         if ($this->_logisticService->isEcpayLogistics($shippingMethod)) {
 
             switch ($shippingMethod) {
 
-                case 'ecpaylogisticcsvunimart_ecpaylogisticcsvunimart':
-                    $group = 'ecpaylogisticcsvunimart' ;
-                    break;
-                case 'ecpaylogisticcsvfamily_ecpaylogisticcsvfamily':
-                    $group = 'ecpaylogisticcsvfamily' ;
-                    break;
+            case 'ecpaylogisticcsvunimart_ecpaylogisticcsvunimart':
+                $group = 'ecpaylogisticcsvunimart' ;
+                break;
+            case 'ecpaylogisticcsvfamily_ecpaylogisticcsvfamily':
+                $group = 'ecpaylogisticcsvfamily' ;
+                break;
 
-                case 'ecpaylogisticcsvhilife_ecpaylogisticcsvhilife':
-                    $group = 'ecpaylogisticcsvhilife' ;
-                    break;
+            case 'ecpaylogisticcsvhilife_ecpaylogisticcsvhilife':
+                $group = 'ecpaylogisticcsvhilife' ;
+                break;
 
-                case 'ecpaylogisticcsvokmart_ecpaylogisticcsvokmart':
-                    $group = 'ecpaylogisticcsvokmart' ;
-                    break;
+            case 'ecpaylogisticcsvokmart_ecpaylogisticcsvokmart':
+                $group = 'ecpaylogisticcsvokmart' ;
+                break;
 
-                default:
-                    $group = '' ;
-                    break;
+            default:
+                $group = '' ;
+                break;
             }
 
-            if(!empty($group)){
+            if(!empty($group)) {
                 $cashOnDeliveryTag = ObjectManager::getInstance()
-                        ->get(ScopeConfigInterface::class)
-                        ->getValue(
-                            'carriers/' . $group . '/cash_on_delivery',
-                            ScopeInterface::SCOPE_STORE,
-                        );
+                    ->get(ScopeConfigInterface::class)
+                    ->getValue(
+                        'carriers/' . $group . '/cash_on_delivery',
+                        ScopeInterface::SCOPE_STORE,
+                    );
             }
         }
 
         // 黑貓 中華郵政不允許貨到付款
-        if(
-            $shippingMethod == 'ecpaylogistichometcat_ecpaylogistichometcat' || 
-            $shippingMethod == 'ecpaylogistichomepost_ecpaylogistichomepost' 
-        ){
+        if($shippingMethod == 'ecpaylogistichometcat_ecpaylogistichometcat'  
+            || $shippingMethod == 'ecpaylogistichomepost_ecpaylogistichomepost' 
+        ) {
             $cashOnDeliveryTag = 0;
         }                   
 
@@ -120,9 +118,8 @@ class MethodAvailable
 
             foreach ($result as $key => $_result) {
 
-                if (
-                    $this->_paymentService->isEcpayPayment($_result->getCode()) ||
-                    $_result->getCode() == 'cashondelivery'
+                if ($this->_paymentService->isEcpayPayment($_result->getCode()) 
+                    || $_result->getCode() == 'cashondelivery'
                 ) {
 
                 } else {

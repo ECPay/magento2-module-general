@@ -16,7 +16,8 @@ use Ecpay\General\Helper\Foundation\GeneralHelper;
 
 use Ecpay\Sdk\Factories\Factory;
 
-class Invoice {
+class Invoice
+{
 
     protected $_loggerInterface;
     protected $_urlInterface;
@@ -34,7 +35,6 @@ class Invoice {
     public function __construct(
         LoggerInterface $loggerInterface,
         UrlInterface $urlInterface,
-
         EncryptionsService $encryptionsService,
         OrderService $orderService,
         MainService $mainService,
@@ -42,8 +42,7 @@ class Invoice {
         LogisticService $logisticService,
         PaymentService $paymentService,
         GeneralHelper $generalHelper
-    )
-    {
+    ) {
         $this->_loggerInterface = $loggerInterface;
         $this->_urlInterface = $urlInterface;
 
@@ -74,10 +73,12 @@ class Invoice {
         // 取得發票會員資訊
         $accountInfo = $this->getInvoiceAccountInfo($invoiceStage);
 
-        $factory = new Factory([
+        $factory = new Factory(
+            [
             'hashKey'   => $accountInfo['HashKey'],
             'hashIv'    => $accountInfo['HashIv'],
-        ]);
+            ]
+        );
 
         $postService = $factory->create('PostWithAesJsonResponseService');
 
@@ -87,8 +88,8 @@ class Invoice {
 
         // 組合送綠界格式
         $data = [
-            'MerchantID' 	=> $accountInfo['MerchantId'],
-            'BarCode' 		=> $barcode,
+            'MerchantID'     => $accountInfo['MerchantId'],
+            'BarCode'         => $barcode,
         ];
 
         $input = [
@@ -143,10 +144,12 @@ class Invoice {
         // 取得發票會員資訊
         $accountInfo = $this->getInvoiceAccountInfo($invoiceStage);
 
-        $factory = new Factory([
+        $factory = new Factory(
+            [
             'hashKey'   => $accountInfo['HashKey'],
             'hashIv'    => $accountInfo['HashIv'],
-        ]);
+            ]
+        );
 
         $postService = $factory->create('PostWithAesJsonResponseService');
 
@@ -156,8 +159,8 @@ class Invoice {
 
         // 組合送綠界格式
         $data = [
-            'MerchantID' 	=> $accountInfo['MerchantId'],
-            'LoveCode' 		=> $loveCode,
+            'MerchantID'     => $accountInfo['MerchantId'],
+            'LoveCode'         => $loveCode,
         ];
 
         $input = [
@@ -243,17 +246,17 @@ class Invoice {
             'data'  => '',
         ];
         
-        $enctyOrderId = str_replace(' ', '+', $orderId) ;
+        $enctyOrderId = str_replace(' ', '+', $orderId);
         $orderId      = $this->_encryptionsService->decrypt($enctyOrderId);
         $orderId      = (int) $orderId ;
 
         // 取出訂單protect_code資訊
         $protectCodeFromOrder = $this->_orderService->getProtectCode($orderId);
-        $this->_loggerInterface->debug('createInvoice protectCodeFromOrder:'. print_r($protectCodeFromOrder,true));
+        $this->_loggerInterface->debug('createInvoice protectCodeFromOrder:'. print_r($protectCodeFromOrder, true));
 
         // 驗證訂單欄位protect_code 是否正確
         if ($protectCodeFromOrder != $protectCode) {
-            $this->_loggerInterface->debug('createInvoice protect_code驗證錯誤:'. print_r($protectCode,true));
+            $this->_loggerInterface->debug('createInvoice protect_code驗證錯誤:'. print_r($protectCode, true));
 
             // 轉為JSON格式
             $responseArray = [
@@ -265,7 +268,7 @@ class Invoice {
         else {
             $responseArray = $this->_invoiceService->invoiceIssue($orderId);
         }
-        $this->_loggerInterface->debug('createInvoice responseArray:'. print_r($responseArray,true));
+        $this->_loggerInterface->debug('createInvoice responseArray:'. print_r($responseArray, true));
         
         return json_encode($responseArray);
     }
@@ -282,21 +285,21 @@ class Invoice {
         ];
 
         // 解密訂單編號
-        $enctyOrderId = str_replace(' ', '+', $orderId) ;
+        $enctyOrderId = str_replace(' ', '+', $orderId);
         $orderId      = $this->_encryptionsService->decrypt($enctyOrderId);
         $orderId      = (int) $orderId ;
 
-        $this->_loggerInterface->debug('invalidInvoice enctyOrderId:' . print_r($enctyOrderId,true));
-        $this->_loggerInterface->debug('invalidInvoice orderId:' . print_r($orderId,true));
+        $this->_loggerInterface->debug('invalidInvoice enctyOrderId:' . print_r($enctyOrderId, true));
+        $this->_loggerInterface->debug('invalidInvoice orderId:' . print_r($orderId, true));
 
         // 取出訂單protect_code資訊
         $protectCodeFromOrder = $this->_orderService->getProtectCode($orderId);
-        $this->_loggerInterface->debug('invalidInvoice protectCodeFromOrder:' . print_r($protectCodeFromOrder,true));
+        $this->_loggerInterface->debug('invalidInvoice protectCodeFromOrder:' . print_r($protectCodeFromOrder, true));
 
         // 驗證訂單欄位protect_code 是否正確
         if ($protectCodeFromOrder != $protectCode) {
 
-            $this->_loggerInterface->debug('invalidInvoice protect_code驗證錯誤:' . print_r($protectCode,true));
+            $this->_loggerInterface->debug('invalidInvoice protect_code驗證錯誤:' . print_r($protectCode, true));
 
             // 轉為JSON格式
             $responseArray = [
@@ -351,14 +354,16 @@ class Invoice {
             $this->_loggerInterface->debug('invalidInvoice ecpayInvoiceDate:'. print_r($ecpayInvoiceDate, true));
             $this->_loggerInterface->debug('invalidInvoice ecpayInvoiceIssueType:'. print_r($ecpayInvoiceIssueType, true));
 
-            if ( !empty($ecpayInvoiceNumber)) {
+            if (!empty($ecpayInvoiceNumber)) {
                 
                 // 存在發票號碼
 
-                $factory = new Factory([
+                $factory = new Factory(
+                    [
                     'hashKey'   => $accountInfo['HashKey'],
                     'hashIv'    => $accountInfo['HashIv'],
-                ]);
+                    ]
+                );
 
                 $postService = $factory->create('PostWithAesJsonResponseService');
 
@@ -386,8 +391,8 @@ class Invoice {
     
                 $response = $postService->post($input, $apiUrl);
     
-                $this->_loggerInterface->debug('invalidInvoice input:' . print_r($input,true));
-                $this->_loggerInterface->debug('invalidInvoice response:' . print_r($response,true));
+                $this->_loggerInterface->debug('invalidInvoice input:' . print_r($input, true));
+                $this->_loggerInterface->debug('invalidInvoice response:' . print_r($response, true));
 
                 if (isset($response['Data']['RtnCode']) && $response['Data']['RtnCode'] == 1) {
 
@@ -436,16 +441,18 @@ class Invoice {
                     return json_encode($responseArray);
                 }
 
-            } else if($ecpayInvoiceIssueType == 2 && empty($ecpayInvoiceNumber)){
+            } else if($ecpayInvoiceIssueType == 2 && empty($ecpayInvoiceNumber)) {
 
                 // 延遲開立並尚未開立發票
-                $ecpayInvoiceOdSob = $this->_orderService->getEcpayInvoiceOdSob($orderId) ;
+                $ecpayInvoiceOdSob = $this->_orderService->getEcpayInvoiceOdSob($orderId);
                 $this->_loggerInterface->debug('CancelDelayIssue ecpayInvoiceOdSob:'. print_r($ecpayInvoiceOdSob, true));
 
-                $factory = new Factory([
+                $factory = new Factory(
+                    [
                     'hashKey'   => $accountInfo['HashKey'],
                     'hashIv'    => $accountInfo['HashIv'],
-                ]);
+                    ]
+                );
 
                 $postService = $factory->create('PostWithAesJsonResponseService');
 
@@ -471,8 +478,8 @@ class Invoice {
     
                 $response = $postService->post($input, $apiUrl);
     
-                $this->_loggerInterface->debug('CancelDelayIssue input:' . print_r($input,true));
-                $this->_loggerInterface->debug('CancelDelayIssue response:' . print_r($response,true));
+                $this->_loggerInterface->debug('CancelDelayIssue input:' . print_r($input, true));
+                $this->_loggerInterface->debug('CancelDelayIssue response:' . print_r($response, true));
 
                 if (isset($response['Data']['RtnCode']) && $response['Data']['RtnCode'] == 1) {
 
@@ -548,21 +555,21 @@ class Invoice {
         ];
 
         // 解密訂單編號
-        $enctyOrderId = str_replace(' ', '+', $orderId) ;
+        $enctyOrderId = str_replace(' ', '+', $orderId);
         $orderId      = $this->_encryptionsService->decrypt($enctyOrderId);
         $orderId = (int) $orderId ;
 
-        $this->_loggerInterface->debug('getInvoiceTag enctyOrderId:'. print_r($enctyOrderId,true));
-        $this->_loggerInterface->debug('getInvoiceTag orderId:'. print_r($orderId,true));
+        $this->_loggerInterface->debug('getInvoiceTag enctyOrderId:'. print_r($enctyOrderId, true));
+        $this->_loggerInterface->debug('getInvoiceTag orderId:'. print_r($orderId, true));
 
         // 取出訂單protect_code資訊
         $protectCodeFromOrder = $this->_orderService->getProtectCode($orderId);
-        $this->_loggerInterface->debug('getInvoiceTag protectCodeFromOrder:'. print_r($protectCodeFromOrder,true));
+        $this->_loggerInterface->debug('getInvoiceTag protectCodeFromOrder:'. print_r($protectCodeFromOrder, true));
 
         // 驗證訂單欄位protect_code 是否正確
-        if($protectCodeFromOrder != $protectCode){
+        if($protectCodeFromOrder != $protectCode) {
 
-            $this->_loggerInterface->debug('getInvoiceTag protect_code驗證錯誤:'. print_r($protectCode,true));
+            $this->_loggerInterface->debug('getInvoiceTag protect_code驗證錯誤:'. print_r($protectCode, true));
 
             // 轉為JSON格式
             $responseArray = [
@@ -576,7 +583,7 @@ class Invoice {
 
         // 取出發票開立標籤
         $ecpayInvoiceTag = $this->_orderService->getEcpayInvoiceTag($orderId);
-        $this->_loggerInterface->debug('getInvoiceTag ecpayInvoiceTag:'. print_r($ecpayInvoiceTag,true));
+        $this->_loggerInterface->debug('getInvoiceTag ecpayInvoiceTag:'. print_r($ecpayInvoiceTag, true));
 
         // 轉為JSON格式
         $responseArray = [
@@ -600,8 +607,8 @@ class Invoice {
         ];
 
         // 判斷發票模組是否啟動
-        $ecpayEnableInvoice = $this->_mainService->getMainConfig('ecpay_enabled_invoice') ;
-        $this->_loggerInterface->debug('createInvoice ecpayEnableInvoice:'. print_r($ecpayEnableInvoice,true));
+        $ecpayEnableInvoice = $this->_mainService->getMainConfig('ecpay_enabled_invoice');
+        $this->_loggerInterface->debug('createInvoice ecpayEnableInvoice:'. print_r($ecpayEnableInvoice, true));
 
         // 轉為JSON格式
         $responseArray = [

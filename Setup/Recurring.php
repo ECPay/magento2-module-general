@@ -42,31 +42,31 @@ class Recurring implements InstallSchemaInterface
     protected $_encryptionsService;
 
     /**
-     * @param Writer $deploymentConfigWriter
-     * @param EncryptionsHelper $encryptionsHelper
-     * @param GeneralHelper $generalHelper
+     * @param Writer             $deploymentConfigWriter
+     * @param EncryptionsHelper  $encryptionsHelper
+     * @param GeneralHelper      $generalHelper
      * @param EncryptionsService $encryptionsService
      */
-	public function __construct(
-		Writer $deploymentConfigWriter,
-		EncryptionsHelper $encryptionsHelper,
-		GeneralHelper $generalHelper,
-		EncryptionsService $encryptionsService
-	) {
-		$this->_deploymentConfigWriter = $deploymentConfigWriter;
+    public function __construct(
+        Writer $deploymentConfigWriter,
+        EncryptionsHelper $encryptionsHelper,
+        GeneralHelper $generalHelper,
+        EncryptionsService $encryptionsService
+    ) {
+        $this->_deploymentConfigWriter = $deploymentConfigWriter;
         $this->_encryptionsHelper = $encryptionsHelper;
         $this->_generalHelper = $generalHelper;
-		$this->_encryptionsService = $encryptionsService;
-	}
+        $this->_encryptionsService = $encryptionsService;
+    }
 
     /**
-     * @param SchemaSetupInterface $setup
-     * @param ModuleContextInterface $context
+     * @param  SchemaSetupInterface   $setup
+     * @param  ModuleContextInterface $context
      * @return void
      */
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
-	{
-		$hashData = $this->_generalHelper->getEncryKeyIV();
+    {
+        $hashData = $this->_generalHelper->getEncryKeyIV();
 
         // 判斷是否存在 Key、IV
         if (empty($hashData['key']) || empty($hashData['iv'])) {
@@ -82,7 +82,7 @@ class Recurring implements InstallSchemaInterface
             ];
 
             // 存入 app/etc/env.php
-		    $this->_deploymentConfigWriter->saveConfig([ConfigFilePool::APP_ENV => $data]);
+            $this->_deploymentConfigWriter->saveConfig([ConfigFilePool::APP_ENV => $data]);
         }
-	}
+    }
 }

@@ -25,18 +25,15 @@ class OrderShipping extends AbstractOrder
 
     public function __construct(
         LoggerInterface $loggerInterface,
-
         Context $context,
         Registry $registry,
         Admin $adminHelper,
-
         EncryptionsService $encryptionsService,
         OrderService $orderService,
         MainService $mainService,
         LogisticService $logisticService,
-
         array $data = []
-    ){
+    ) {
         parent::__construct($context, $registry, $adminHelper, $data);
 
         $this->_loggerInterface = $loggerInterface;
@@ -77,7 +74,7 @@ class OrderShipping extends AbstractOrder
             'protect_code' => $this->_orderService->getProtectCode($this->orderId),
         ];
 
-        return json_encode($encryptData);
+        return $encryptData;
     }
 
     /**
@@ -87,7 +84,7 @@ class OrderShipping extends AbstractOrder
      */
     public function getShippingData()
     {
-	    // 物流方式
+        // 物流方式
         $shippingMethod = $this->_orderService->getShippingMethod($this->orderId);
         $this->_loggerInterface->debug('OrderShipping $shippingMethod:'. print_r($shippingMethod, true));
 
@@ -143,7 +140,7 @@ class OrderShipping extends AbstractOrder
             $logisticData = array_merge($logisticData, $extension);
         }
 
-        return json_encode($logisticData);
+        return $logisticData;
     }
 }
 

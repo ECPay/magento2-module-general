@@ -20,19 +20,18 @@ class Authorization
         LoggerInterface $loggerInterface,
         Session $backendSession,
         UserContextInterface $userContext
-    )
-    {
+    ) {
         $this->_loggerInterface = $loggerInterface;
         $this->_backendSession = $backendSession;
         $this->_userContext = $userContext;
     }
 
     /**
-     * @param ResourceOrder $subject
-     * @param ResourceOrder $result
-     * @param \Magento\Framework\Model\AbstractModel $order
-     * @return ResourceOrder
-     * @throws NoSuchEntityException
+     * @param                                         ResourceOrder                          $subject
+     * @param                                         ResourceOrder                          $result
+     * @param                                         \Magento\Framework\Model\AbstractModel $order
+     * @return                                        ResourceOrder
+     * @throws                                        NoSuchEntityException
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function afterLoad(

@@ -29,14 +29,11 @@ class LogisticService extends AbstractHelper
     public function __construct(
         Context $context,
         UrlInterface $urlInterface,
-
         EcpayLogisticFactory $ecpayLogisticFactory,
-
         OrderService $orderService,
         MainService $mainService,
         Data $directoryHelper,
-    )
-    {
+    ) {
         $this->_urlInterface = $urlInterface;
 
         $this->_ecpayLogisticFactory = $ecpayLogisticFactory;
@@ -50,35 +47,36 @@ class LogisticService extends AbstractHelper
 
     /**
      * 取出測試帳號KEY IV
-     * @param  string  $type
+     *
+     * @param  string $type
      * @return array
      */
     public function getStageAccount($type = '')
     {
         switch ($type) {
 
-            case 'B2C':
-                $info = [
-                    'MerchantId'    => '2000132',
-                    'HashKey'       => '5294y06JbISpM5x9',
-                    'HashIv'        => 'v77hoKGq4kWxNNIS',
-                ] ;
+        case 'B2C':
+            $info = [
+                'MerchantId'    => '2000132',
+                'HashKey'       => '5294y06JbISpM5x9',
+                'HashIv'        => 'v77hoKGq4kWxNNIS',
+            ] ;
             break;
 
-            case 'C2C':
-                $info = [
-                    'MerchantId'    => '2000933',
-                    'HashKey'       => 'XBERn1YOvpM9nfZc',
-                    'HashIv'        => 'h1ONHk4P4yqbl5LK',
-                ] ;
+        case 'C2C':
+            $info = [
+                'MerchantId'    => '2000933',
+                'HashKey'       => 'XBERn1YOvpM9nfZc',
+                'HashIv'        => 'h1ONHk4P4yqbl5LK',
+            ] ;
             break;
 
-            default:
-                $info = [
-                    'MerchantId'    => '2000933',
-                    'HashKey'       => 'XBERn1YOvpM9nfZc',
-                    'HashIv'        => 'h1ONHk4P4yqbl5LK',
-                ] ;
+        default:
+            $info = [
+                'MerchantId'    => '2000933',
+                'HashKey'       => 'XBERn1YOvpM9nfZc',
+                'HashIv'        => 'h1ONHk4P4yqbl5LK',
+            ] ;
             break;
         }
 
@@ -87,78 +85,79 @@ class LogisticService extends AbstractHelper
 
     /**
      * 取出API介接網址
-     * @param  string  $action
-     * @param  string  $stage
+     *
+     * @param  string $action
+     * @param  string $stage
      * @return string  $url
      */
     public function getApiUrl($action = 'map', $stage = 1, $type = 'C2C', $shippingMethod = '')
     {
 
-        if($stage == 1){
+        if($stage == 1) {
 
             switch ($action) {
 
-                case 'map':
-                    $url = 'https://logistics-stage.ecpay.com.tw/Express/map' ;
+            case 'map':
+                $url = 'https://logistics-stage.ecpay.com.tw/Express/map' ;
                 break;
 
-                case 'create':
-                    $url = 'https://logistics-stage.ecpay.com.tw/Express/Create' ;
+            case 'create':
+                $url = 'https://logistics-stage.ecpay.com.tw/Express/Create' ;
                 break;
 
-                case 'print':
+            case 'print':
 
-                    if ($type == 'C2C') {
+                if ($type == 'C2C') {
 
-                        switch ($shippingMethod) {
+                    switch ($shippingMethod) {
 
-                            case 'ecpaylogisticcsvunimart_ecpaylogisticcsvunimart':
-                                $url = 'https://logistics-stage.ecpay.com.tw/Express/PrintUniMartC2COrderInfo' ;
-                            break;
+                    case 'ecpaylogisticcsvunimart_ecpaylogisticcsvunimart':
+                        $url = 'https://logistics-stage.ecpay.com.tw/Express/PrintUniMartC2COrderInfo' ;
+                        break;
 
-                            case 'ecpaylogisticcsvfamily_ecpaylogisticcsvfamily':
-                                $url = 'https://logistics-stage.ecpay.com.tw/Express/PrintFAMIC2COrderInfo' ;
-                            break;
+                    case 'ecpaylogisticcsvfamily_ecpaylogisticcsvfamily':
+                        $url = 'https://logistics-stage.ecpay.com.tw/Express/PrintFAMIC2COrderInfo' ;
+                        break;
 
-                            case 'ecpaylogisticcsvhilife_ecpaylogisticcsvhilife':
-                                $url = 'https://logistics-stage.ecpay.com.tw/Express/PrintHILIFEC2COrderInfo' ;
-                            break;
+                    case 'ecpaylogisticcsvhilife_ecpaylogisticcsvhilife':
+                        $url = 'https://logistics-stage.ecpay.com.tw/Express/PrintHILIFEC2COrderInfo' ;
+                        break;
 
-                            case 'ecpaylogisticcsvokmart_ecpaylogisticcsvokmart':
-                                $url = 'https://logistics-stage.ecpay.com.tw/Express/PrintOKMARTC2COrderInfo' ;
-                            break;
+                    case 'ecpaylogisticcsvokmart_ecpaylogisticcsvokmart':
+                        $url = 'https://logistics-stage.ecpay.com.tw/Express/PrintOKMARTC2COrderInfo' ;
+                        break;
 
-                            case 'ecpaylogistichometcat_ecpaylogistichometcat':
-                            case 'ecpaylogistichomepost_ecpaylogistichomepost':
-                                $url = 'https://logistics-stage.ecpay.com.tw/helper/printTradeDocument' ;
-                            break;
+                    case 'ecpaylogistichometcat_ecpaylogistichometcat':
+                    case 'ecpaylogistichomepost_ecpaylogistichomepost':
+                        $url = 'https://logistics-stage.ecpay.com.tw/helper/printTradeDocument' ;
+                        break;
 
-                            default:
-                                $url = '' ;
-                            break;
-                        }
-
-                    } else if ($type == 'B2C') {
-
-                        switch ($shippingMethod) {
-
-                            case 'ecpaylogisticcsvunimart_ecpaylogisticcsvunimart':
-                            case 'ecpaylogisticcsvfamily_ecpaylogisticcsvfamily':
-                            case 'ecpaylogisticcsvhilife_ecpaylogisticcsvhilife':
-                            case 'ecpaylogistichometcat_ecpaylogistichometcat':
-                            case 'ecpaylogistichomepost_ecpaylogistichomepost':
-                                $url = 'https://logistics-stage.ecpay.com.tw/helper/printTradeDocument' ;
-                            break;
-                            default:
-                                $url = '' ;
-                            break;
-                        }
+                    default:
+                        $url = '' ;
+                        break;
                     }
 
+                } else if ($type == 'B2C') {
+
+                    switch ($shippingMethod) {
+
+                    case 'ecpaylogisticcsvunimart_ecpaylogisticcsvunimart':
+                    case 'ecpaylogisticcsvfamily_ecpaylogisticcsvfamily':
+                    case 'ecpaylogisticcsvhilife_ecpaylogisticcsvhilife':
+                    case 'ecpaylogistichometcat_ecpaylogistichometcat':
+                    case 'ecpaylogistichomepost_ecpaylogistichomepost':
+                        $url = 'https://logistics-stage.ecpay.com.tw/helper/printTradeDocument' ;
+                        break;
+                    default:
+                        $url = '' ;
+                        break;
+                    }
+                }
+
                 break;
 
-                default:
-                    $url = '' ;
+            default:
+                $url = '' ;
                 break;
             }
 
@@ -166,67 +165,67 @@ class LogisticService extends AbstractHelper
 
             switch ($action) {
 
-                case 'map':
-                    $url = 'https://logistics.ecpay.com.tw/Express/map' ;
+            case 'map':
+                $url = 'https://logistics.ecpay.com.tw/Express/map' ;
                 break;
 
-                case 'create':
-                    $url = 'https://logistics.ecpay.com.tw/Express/Create' ;
+            case 'create':
+                $url = 'https://logistics.ecpay.com.tw/Express/Create' ;
                 break;
 
-                case 'print':
+            case 'print':
 
-                    if ($type == 'C2C') {
+                if ($type == 'C2C') {
 
-                        switch ($shippingMethod) {
+                    switch ($shippingMethod) {
 
-                            case 'ecpaylogisticcsvunimart_ecpaylogisticcsvunimart':
-                                $url = 'https://logistics.ecpay.com.tw/Express/PrintUniMartC2COrderInfo' ;
-                            break;
+                    case 'ecpaylogisticcsvunimart_ecpaylogisticcsvunimart':
+                        $url = 'https://logistics.ecpay.com.tw/Express/PrintUniMartC2COrderInfo' ;
+                        break;
 
-                            case 'ecpaylogisticcsvfamily_ecpaylogisticcsvfamily':
-                                $url = 'https://logistics.ecpay.com.tw/Express/PrintFAMIC2COrderInfo' ;
-                            break;
+                    case 'ecpaylogisticcsvfamily_ecpaylogisticcsvfamily':
+                        $url = 'https://logistics.ecpay.com.tw/Express/PrintFAMIC2COrderInfo' ;
+                        break;
 
-                            case 'ecpaylogisticcsvhilife_ecpaylogisticcsvhilife':
-                                $url = 'https://logistics.ecpay.com.tw/Express/PrintHILIFEC2COrderInfo' ;
-                            break;
+                    case 'ecpaylogisticcsvhilife_ecpaylogisticcsvhilife':
+                        $url = 'https://logistics.ecpay.com.tw/Express/PrintHILIFEC2COrderInfo' ;
+                        break;
 
-                            case 'ecpaylogisticcsvokmart_ecpaylogisticcsvokmart':
-                                $url = 'https://logistics.ecpay.com.tw/Express/PrintOKMARTC2COrderInfo' ;
-                            break;
+                    case 'ecpaylogisticcsvokmart_ecpaylogisticcsvokmart':
+                        $url = 'https://logistics.ecpay.com.tw/Express/PrintOKMARTC2COrderInfo' ;
+                        break;
 
-                            case 'ecpaylogistichometcat_ecpaylogistichometcat':
-                            case 'ecpaylogistichomepost_ecpaylogistichomepost':
-                                $url = 'https://logistics.ecpay.com.tw/helper/printTradeDocument' ;
-                            break;
+                    case 'ecpaylogistichometcat_ecpaylogistichometcat':
+                    case 'ecpaylogistichomepost_ecpaylogistichomepost':
+                        $url = 'https://logistics.ecpay.com.tw/helper/printTradeDocument' ;
+                        break;
 
-                            default:
-                                $url = '' ;
-                            break;
-                        }
-
-                    } else if ($type == 'B2C') {
-
-                        switch ($shippingMethod) {
-
-                            case 'ecpaylogisticcsvunimart_ecpaylogisticcsvunimart':
-                            case 'ecpaylogisticcsvfamily_ecpaylogisticcsvfamily':
-                            case 'ecpaylogisticcsvhilife_ecpaylogisticcsvhilife':
-                            case 'ecpaylogistichometcat_ecpaylogistichometcat':
-                            case 'ecpaylogistichomepost_ecpaylogistichomepost':
-                                $url = 'https://logistics.ecpay.com.tw/helper/printTradeDocument' ;
-                            break;
-                            default:
-                                $url = '' ;
-                            break;
-                        }
+                    default:
+                        $url = '' ;
+                        break;
                     }
 
+                } else if ($type == 'B2C') {
+
+                    switch ($shippingMethod) {
+
+                    case 'ecpaylogisticcsvunimart_ecpaylogisticcsvunimart':
+                    case 'ecpaylogisticcsvfamily_ecpaylogisticcsvfamily':
+                    case 'ecpaylogisticcsvhilife_ecpaylogisticcsvhilife':
+                    case 'ecpaylogistichometcat_ecpaylogistichometcat':
+                    case 'ecpaylogistichomepost_ecpaylogistichomepost':
+                        $url = 'https://logistics.ecpay.com.tw/helper/printTradeDocument' ;
+                        break;
+                    default:
+                        $url = '' ;
+                        break;
+                    }
+                }
+
                 break;
 
-                default:
-                    $url = '' ;
+            default:
+                $url = '' ;
                 break;
             }
         }
@@ -236,6 +235,7 @@ class LogisticService extends AbstractHelper
 
     /**
      * 取得綠界物流
+     *
      * @return array
      */
     public function getEcpayAllLogistics()
@@ -252,6 +252,7 @@ class LogisticService extends AbstractHelper
 
     /**
      * 取得綠界宅配物流
+     *
      * @return array
      */
     public function getEcpayHomeLogistics()
@@ -264,6 +265,7 @@ class LogisticService extends AbstractHelper
 
     /**
      * 取得綠界超商物流
+     *
      * @return array
      */
     public function getEcpayCvsLogistics()
@@ -278,8 +280,9 @@ class LogisticService extends AbstractHelper
 
     /**
      * 取出CVS API的物流子類型格式
-     * @param  string  $type
-     * @param  string  $shippingMethod
+     *
+     * @param  string $type
+     * @param  string $shippingMethod
      * @return string  $logisticsSubType
      */
     public function getCvsLogisticsSubType($type = 'C2C', $shippingMethod = '')
@@ -287,29 +290,29 @@ class LogisticService extends AbstractHelper
 
         switch ($shippingMethod) {
 
-            case 'ecpaylogisticcsvunimart_ecpaylogisticcsvunimart':
+        case 'ecpaylogisticcsvunimart_ecpaylogisticcsvunimart':
 
-                $logisticsSubType = ($type == 'C2C') ? 'UNIMARTC2C' : 'UNIMART' ;
-
-            break;
-            case 'ecpaylogisticcsvfamily_ecpaylogisticcsvfamily':
-
-                $logisticsSubType = ($type == 'C2C') ? 'FAMIC2C' : 'FAMI' ;
+            $logisticsSubType = ($type == 'C2C') ? 'UNIMARTC2C' : 'UNIMART' ;
 
             break;
-            case 'ecpaylogisticcsvhilife_ecpaylogisticcsvhilife':
+        case 'ecpaylogisticcsvfamily_ecpaylogisticcsvfamily':
 
-                $logisticsSubType = ($type == 'C2C') ? 'HILIFEC2C' : 'HILIFE' ;
-
-            break;
-            case 'ecpaylogisticcsvokmart_ecpaylogisticcsvokmart':
-
-                $logisticsSubType = ($type == 'C2C') ? 'OKMARTC2C' : '' ;
+            $logisticsSubType = ($type == 'C2C') ? 'FAMIC2C' : 'FAMI' ;
 
             break;
+        case 'ecpaylogisticcsvhilife_ecpaylogisticcsvhilife':
 
-            default:
-                $logisticsSubType = '' ;
+            $logisticsSubType = ($type == 'C2C') ? 'HILIFEC2C' : 'HILIFE' ;
+
+            break;
+        case 'ecpaylogisticcsvokmart_ecpaylogisticcsvokmart':
+
+            $logisticsSubType = ($type == 'C2C') ? 'OKMARTC2C' : '' ;
+
+            break;
+
+        default:
+            $logisticsSubType = '' ;
             break;
         }
 
@@ -318,6 +321,7 @@ class LogisticService extends AbstractHelper
 
     /**
      * 取得允許的 CVS 訂單最大金額
+     *
      * @param  mixed $maxOrderAmount
      * @return int
      */
@@ -325,7 +329,7 @@ class LogisticService extends AbstractHelper
     {
         $default = 19999;
 
-        if ($maxOrderAmount == '' || $maxOrderAmount == NULL || $maxOrderAmount == 0) {
+        if ($maxOrderAmount == '' || $maxOrderAmount == null || $maxOrderAmount == 0) {
             return $default;
         }
 
@@ -338,8 +342,9 @@ class LogisticService extends AbstractHelper
 
     /**
      * 取出HOME API的物流子類型格式
-     * @param  string  $type
-     * @param  string  $shippingMethod
+     *
+     * @param  string $type
+     * @param  string $shippingMethod
      * @return string  $logisticsSubType
      */
     public function getHomeLogisticsSubType($shippingMethod = '')
@@ -347,19 +352,19 @@ class LogisticService extends AbstractHelper
 
         switch ($shippingMethod) {
 
-            case 'ecpaylogistichometcat_ecpaylogistichometcat':
+        case 'ecpaylogistichometcat_ecpaylogistichometcat':
 
-                $logisticsSubType = 'TCAT' ;
-
-            break;
-            case 'ecpaylogistichomepost_ecpaylogistichomepost':
-
-                $logisticsSubType = 'POST' ;
+            $logisticsSubType = 'TCAT' ;
 
             break;
+        case 'ecpaylogistichomepost_ecpaylogistichomepost':
 
-            default:
-                $logisticsSubType = '' ;
+            $logisticsSubType = 'POST' ;
+
+            break;
+
+        default:
+            $logisticsSubType = '' ;
             break;
         }
 
@@ -368,7 +373,8 @@ class LogisticService extends AbstractHelper
 
     /**
      * 取出區域
-     * @param  int  $zipCode
+     *
+     * @param  int $zipCode
      * @return string  $return
      */
     public function getPostalName($zipCode = 0)
@@ -750,7 +756,8 @@ class LogisticService extends AbstractHelper
 
     /**
      * 轉換訂購商品格式符合物流訂單API
-     * @param  array  $orderItem
+     *
+     * @param  array $orderItem
      * @return string  $itemName
      */
     public function getItemName($orderItem)
@@ -767,6 +774,7 @@ class LogisticService extends AbstractHelper
 
     /**
      * 判斷是否為綠界物流
+     *
      * @param  string|null $shippingMethod
      * @return bool
      */
@@ -781,6 +789,7 @@ class LogisticService extends AbstractHelper
 
     /**
      * 判斷是否為綠界宅配物流
+     *
      * @param  string $shippingMethod
      * @return bool
      */
@@ -791,6 +800,7 @@ class LogisticService extends AbstractHelper
 
     /**
      * 判斷是否為綠界超商物流
+     *
      * @param  string $shippingMethod
      * @return bool
      */
@@ -809,11 +819,13 @@ class LogisticService extends AbstractHelper
      */
     public function mapToEcpay(array $accountInfo, array $input, string $apiUrl)
     {
-        $factory = new Factory([
+        $factory = new Factory(
+            [
             'hashKey'    => $accountInfo['HashKey'],
             'hashIv'     => $accountInfo['HashIv'],
             'hashMethod' => 'md5',
-        ]);
+            ]
+        );
 
         $autoSubmitFormService = $factory->create('AutoSubmitFormWithCmvService');
 
@@ -832,6 +844,7 @@ class LogisticService extends AbstractHelper
 
     /**
      * 建立物流訂單
+     *
      * @param int $orderId
      */
     public function logisticCreateOrder(int $orderId)
@@ -853,15 +866,15 @@ class LogisticService extends AbstractHelper
             // 取出訂單總金額
             $baseGrandTota = $this->_orderService->getBaseGrandTotal($orderId);
             $goodsAmount = intval(round($baseGrandTota, 0));
-            $this->_logger->debug('LogisticService goodsAmount:'. print_r($goodsAmount,true));
+            $this->_logger->debug('LogisticService goodsAmount:'. print_r($goodsAmount, true));
 
             // 收件人姓名
             $receiverName = $this->_orderService->getShippingName($orderId);
-            $this->_logger->debug('LogisticService receiverName:'. print_r($receiverName,true));
+            $this->_logger->debug('LogisticService receiverName:'. print_r($receiverName, true));
 
             // 收件人電話
             $receiverCellPhone = $this->_orderService->getShippingTelephone($orderId);
-            $this->_logger->debug('LogisticService receiverCellPhone:'. print_r($receiverCellPhone,true));
+            $this->_logger->debug('LogisticService receiverCellPhone:'. print_r($receiverCellPhone, true));
 
             // 貨到付款判斷
             $paymentMethod = $this->_orderService->getPaymentMethod($orderId);
@@ -874,34 +887,34 @@ class LogisticService extends AbstractHelper
             }
 
             // 取出是否為測試模式
-            $logisticStage = $this->_mainService->getLogisticConfig('enabled_logistic_stage') ;
-            $this->_logger->debug('LogisticService logisticStage:'. print_r($logisticStage,true));
+            $logisticStage = $this->_mainService->getLogisticConfig('enabled_logistic_stage');
+            $this->_logger->debug('LogisticService logisticStage:'. print_r($logisticStage, true));
 
             // 取出CvsType
-            $logisticCvsType = $this->_mainService->getLogisticConfig('logistic_cvs_type') ;
-            $this->_logger->debug('LogisticService logisticCvsType:'. print_r($logisticCvsType,true));
+            $logisticCvsType = $this->_mainService->getLogisticConfig('logistic_cvs_type');
+            $this->_logger->debug('LogisticService logisticCvsType:'. print_r($logisticCvsType, true));
 
             // 取出 URL
             $apiUrl = $this->getApiUrl('create', $logisticStage, $logisticCvsType);
-            $this->_logger->debug('LogisticService apiUrl:'. print_r($apiUrl,true));
+            $this->_logger->debug('LogisticService apiUrl:'. print_r($apiUrl, true));
 
             // 判斷測試模式
             if ($logisticStage == 1) {
 
                 // 取出 KEY IV MID (測試模式)
                 $accountInfo = $this->getStageAccount($logisticCvsType);
-                $this->_logger->debug('LogisticService accountInfo:'. print_r($accountInfo,true));
+                $this->_logger->debug('LogisticService accountInfo:'. print_r($accountInfo, true));
 
             } else {
 
                 // 取出 KEY IV MID (正式模式)
-                $logisticMerchantId = $this->_mainService->getLogisticConfig('logistic_mid') ;
-                $logisticHashKey    = $this->_mainService->getLogisticConfig('logistic_hashkey') ;
-                $logisticHashIv     = $this->_mainService->getLogisticConfig('logistic_hashiv') ;
+                $logisticMerchantId = $this->_mainService->getLogisticConfig('logistic_mid');
+                $logisticHashKey    = $this->_mainService->getLogisticConfig('logistic_hashkey');
+                $logisticHashIv     = $this->_mainService->getLogisticConfig('logistic_hashiv');
 
-                $this->_logger->debug('LogisticService logisticMerchantId:'. print_r($logisticMerchantId,true));
-                $this->_logger->debug('LogisticService logisticHashKey:'. print_r($logisticHashKey,true));
-                $this->_logger->debug('LogisticService logisticHashIv:'. print_r($logisticHashIv,true));
+                $this->_logger->debug('LogisticService logisticMerchantId:'. print_r($logisticMerchantId, true));
+                $this->_logger->debug('LogisticService logisticHashKey:'. print_r($logisticHashKey, true));
+                $this->_logger->debug('LogisticService logisticHashIv:'. print_r($logisticHashIv, true));
 
                 $accountInfo = [
                     'MerchantId' => $logisticMerchantId,
@@ -911,41 +924,41 @@ class LogisticService extends AbstractHelper
             }
 
             // 取出訂單前綴
-            $logisticOrderPreFix = $this->_mainService->getLogisticConfig('logistic_order_prefix') ;
-            $this->_logger->debug('LogisticService logisticOrderPreFix:'. print_r($logisticOrderPreFix,true));
+            $logisticOrderPreFix = $this->_mainService->getLogisticConfig('logistic_order_prefix');
+            $this->_logger->debug('LogisticService logisticOrderPreFix:'. print_r($logisticOrderPreFix, true));
 
             // 組合廠商訂單編號
             $merchantTradeNo = $this->_orderService->getMerchantTradeNo($orderId, $logisticOrderPreFix);
-            $this->_logger->debug('LogisticService merchantTradeNo:'. print_r($merchantTradeNo,true));
+            $this->_logger->debug('LogisticService merchantTradeNo:'. print_r($merchantTradeNo, true));
 
             // 取出寄件人姓名
-            $logisticSenderName = $this->_mainService->getLogisticConfig('logistic_sender_name') ;
-            $this->_logger->debug('LogisticService logisticSenderName:'. print_r($logisticSenderName,true));
+            $logisticSenderName = $this->_mainService->getLogisticConfig('logistic_sender_name');
+            $this->_logger->debug('LogisticService logisticSenderName:'. print_r($logisticSenderName, true));
 
             // 取出寄件人電話
-            $logisticSenderCellphone = $this->_mainService->getLogisticConfig('logistic_sender_cellphone') ;
-            $this->_logger->debug('LogisticService logisticSenderCellphone:'. print_r($logisticSenderCellphone,true));
+            $logisticSenderCellphone = $this->_mainService->getLogisticConfig('logistic_sender_cellphone');
+            $this->_logger->debug('LogisticService logisticSenderCellphone:'. print_r($logisticSenderCellphone, true));
 
             // 貨態回傳網址
             $serverReplyURL = $this->_urlInterface->getUrl('ecpaygeneral/Process/LogisticStatusResponse');
-            $this->_logger->debug('LogisticService serverReplyURL:'. print_r($serverReplyURL,true));
+            $this->_logger->debug('LogisticService serverReplyURL:'. print_r($serverReplyURL, true));
 
             // 綠界訂單顯示商品名稱判斷
 
-            $logisticDispItemName = $this->_mainService->getLogisticConfig('enabled_logistic_disp_item_name') ;
-            $this->_logger->debug('LogisticService logisticDispItemName:'. print_r($logisticDispItemName,true));
+            $logisticDispItemName = $this->_mainService->getLogisticConfig('enabled_logistic_disp_item_name');
+            $this->_logger->debug('LogisticService logisticDispItemName:'. print_r($logisticDispItemName, true));
 
             $itemNameDefault = __('A Package Of Online Goods');
 
-            if ( $logisticDispItemName == 1 ) {
+            if ($logisticDispItemName == 1 ) {
 
                 // 取出訂單品項
                 $salesOrderItem = $this->_orderService->getSalesOrderItemByOrderId($orderId);
-                $this->_logger->debug('LogisticService salesOrderItem:'. print_r($salesOrderItem,true));
+                $this->_logger->debug('LogisticService salesOrderItem:'. print_r($salesOrderItem, true));
 
                 // 轉換商品名稱格式
                 $itemName = $this->getItemName($salesOrderItem);
-                $this->_logger->debug('LogisticService itemName:'. print_r($itemName,true));
+                $this->_logger->debug('LogisticService itemName:'. print_r($itemName, true));
 
                 // 判斷是否超過長度，如果超過長度改為預設文字
                 if (strlen($itemName) > 50 ) {
@@ -957,7 +970,7 @@ class LogisticService extends AbstractHelper
                     $status = false ;
                     $isVisibleOnFront = false ;
 
-                    $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront) ;
+                    $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront);
                 }
 
                 // 判斷特殊字元
@@ -970,14 +983,14 @@ class LogisticService extends AbstractHelper
                     $status = false ;
                     $isVisibleOnFront = false ;
 
-                    $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront) ;
+                    $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront);
                 }
 
             } else {
                 $itemName = $itemNameDefault;
             }
 
-            $this->_logger->debug('LogisticService itemName:'. print_r($itemName,true));
+            $this->_logger->debug('LogisticService itemName:'. print_r($itemName, true));
 
             // 判斷宅配種類
             if ($this->isEcpayCvsLogistics($shippingMethod)) {
@@ -985,7 +998,7 @@ class LogisticService extends AbstractHelper
 
                 // 取出物流子類型
                 $logisticsSubType = $this->getCvsLogisticsSubType($logisticCvsType, $shippingMethod);
-                $this->_logger->debug('LogisticService logisticsSubType:'. print_r($logisticsSubType,true));
+                $this->_logger->debug('LogisticService logisticsSubType:'. print_r($logisticsSubType, true));
 
                 // 取出超商代碼
                 $CVSStoreID = $this->_orderService->getEcpayLogisticCvsStoreId($orderId);
@@ -1019,23 +1032,23 @@ class LogisticService extends AbstractHelper
 
                 // 取出物流子類型
                 $logisticsSubType = $this->getHomeLogisticsSubType($shippingMethod);
-                $this->_logger->debug('LogisticService logisticsSubType:'. print_r($logisticsSubType,true));
+                $this->_logger->debug('LogisticService logisticsSubType:'. print_r($logisticsSubType, true));
 
                 // 取出寄件人郵遞區號
-                $logisticSenderZipcode = $this->_mainService->getLogisticConfig('logistic_sender_zipcode') ;
-                $this->_logger->debug('LogisticService logisticSenderZipcode:'. print_r($logisticSenderZipcode,true));
+                $logisticSenderZipcode = $this->_mainService->getLogisticConfig('logistic_sender_zipcode');
+                $this->_logger->debug('LogisticService logisticSenderZipcode:'. print_r($logisticSenderZipcode, true));
 
                 // 取出寄件人地址
-                $logisticSenderAddress = $this->_mainService->getLogisticConfig('logistic_sender_address') ;
-                $this->_logger->debug('LogisticService logisticSenderAddress:'. print_r($logisticSenderAddress,true));
+                $logisticSenderAddress = $this->_mainService->getLogisticConfig('logistic_sender_address');
+                $this->_logger->debug('LogisticService logisticSenderAddress:'. print_r($logisticSenderAddress, true));
 
                 // 收件人郵遞區號
                 $receiverZipCode = $this->_orderService->getShippingPostcode($orderId);
-                $this->_logger->debug('LogisticService receiverZipCode:'. print_r($receiverZipCode,true));
+                $this->_logger->debug('LogisticService receiverZipCode:'. print_r($receiverZipCode, true));
 
                 // 收件人地址
                 $receiverStreet = $this->_orderService->getShippingStreet($orderId);
-                $this->_logger->debug('LogisticService receiverStreet:'. print_r($receiverStreet,true));
+                $this->_logger->debug('LogisticService receiverStreet:'. print_r($receiverStreet, true));
 
                 // 地址郵遞區號組合
                 $getPostalName = $this->getPostalName($receiverZipCode);
@@ -1046,13 +1059,13 @@ class LogisticService extends AbstractHelper
 
                 // 重量計算
                 $goodsWeight = $this->_orderService->getWeight($orderId);
-                $this->_logger->debug('LogisticService collectRates goodsWeight:'. print_r($goodsWeight,true) . ' ' . $weightUnit);
+                $this->_logger->debug('LogisticService collectRates goodsWeight:'. print_r($goodsWeight, true) . ' ' . $weightUnit);
 
                 // 單位轉換
                 if ($weightUnit == 'lbs') {
 
                     $goodsWeight = $goodsWeight * 0.45359;
-                    $this->_logger->debug('LogisticService collectRates goodsWeight:'. print_r($goodsWeight,true) . 'KG');
+                    $this->_logger->debug('LogisticService collectRates goodsWeight:'. print_r($goodsWeight, true) . 'KG');
                 }
 
                 $goodsWeight = round($goodsWeight, 3);
@@ -1083,20 +1096,21 @@ class LogisticService extends AbstractHelper
                 ];
             }
 
-            $factory = new Factory([
+            $factory = new Factory(
+                [
                 'hashKey'       => $accountInfo['HashKey'],
                 'hashIv'        => $accountInfo['HashIv'],
                 'hashMethod'    => 'md5',
-            ]);
+                ]
+            );
 
             $postService = $factory->create('PostWithCmvEncodedStrResponseService');
             $response = $postService->post($inputLogisticOrder, $apiUrl);
-            $this->_logger->debug('LogisticService inputLogisticOrder:'. print_r($inputLogisticOrder,true));
-            $this->_logger->debug('LogisticService response:'. print_r($response,true));
+            $this->_logger->debug('LogisticService inputLogisticOrder:'. print_r($inputLogisticOrder, true));
+            $this->_logger->debug('LogisticService response:'. print_r($response, true));
 
-            if (
-                isset($response['RtnCode']) &&
-                ( $response['RtnCode'] == 300 || $response['RtnCode'] == 2001 )
+            if (isset($response['RtnCode']) 
+                && ( $response['RtnCode'] == 300 || $response['RtnCode'] == 2001 )
             ) {
 
                 // 回傳結果寫入備註
@@ -1104,11 +1118,12 @@ class LogisticService extends AbstractHelper
                 $status = false ;
                 $isVisibleOnFront = false ;
 
-                $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront) ;
+                $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront);
 
                 // 寫入綠界物流資料表
                 $ecpayLogisticModel = $this->_ecpayLogisticFactory->create();
-                $ecpayLogisticModel->addData([
+                $ecpayLogisticModel->addData(
+                    [
                     'order_id'              => $orderId,
                     'merchant_trade_no'     => $response['MerchantTradeNo'],
                     'rtn_code'              => $response['RtnCode'],
@@ -1119,15 +1134,16 @@ class LogisticService extends AbstractHelper
                     'booking_note'          => $response['BookingNote'],
                     'cvs_payment_no'        => $response['CVSPaymentNo'],
                     'cvs_validation_no'     => $response['CVSValidationNo'],
-                ]);
+                    ]
+                );
 
                 $saveData = $ecpayLogisticModel->save();
 
                 // 異動旗標
-                $this->_orderService->setOrderData($orderId, 'ecpay_shipping_tag', 1) ;
+                $this->_orderService->setOrderData($orderId, 'ecpay_shipping_tag', 1);
 
                 // 執行既有程序
-                $this->_orderService->setOrderShip($orderId) ;
+                $this->_orderService->setOrderShip($orderId);
 
                 // 回傳前端資訊
                 $dataResponse['order_id']             = $orderId;
@@ -1148,10 +1164,10 @@ class LogisticService extends AbstractHelper
             } else {
 
                 // 回傳結果寫入備註
-                $comment = '建立物流訂單(失敗)，回傳資訊：' . print_r($response,true);
+                $comment = '建立物流訂單(失敗)，回傳資訊：' . print_r($response, true);
                 $status = false ;
                 $isVisibleOnFront = false ;
-                $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront) ;
+                $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront);
 
                 return ['code' => '2005'];
             }
@@ -1163,11 +1179,12 @@ class LogisticService extends AbstractHelper
 
     /**
      * 計算中華郵政宅配重量運費
-     * @param  int|float $weight  單位僅限KG
-     * @param  int $shippingFee1 0-5   KG
-     * @param  int $shippingFee2 5-10  KG
-     * @param  int $shippingFee3 10-15 KG
-     * @param  int $shippingFee4 15-20 KG
+     *
+     * @param  int|float $weight       單位僅限KG
+     * @param  int       $shippingFee1 0-5   KG
+     * @param  int       $shippingFee2 5-10  KG
+     * @param  int       $shippingFee3 10-15 KG
+     * @param  int       $shippingFee4 15-20 KG
      * @return int
      */
     public function calculateHomePostShippingWeight(int|float $weight, int $shippingFee1, int $shippingFee2, int $shippingFee3, int $shippingFee4)

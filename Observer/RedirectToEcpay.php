@@ -71,7 +71,7 @@ class RedirectToEcpay implements ObserverInterface
         $this->_loggerInterface->debug('RedirectProcess Event $result:');
 
         // logging to test overrid
-        $this->_loggerInterface->debug('RedirectProcess Event $orderId:'. print_r($orderId,true));
+        $this->_loggerInterface->debug('RedirectProcess Event $orderId:'. print_r($orderId, true));
 
         // 取出物流方式
         $shippingMethod = $order->getShippingMethod();
@@ -84,14 +84,14 @@ class RedirectToEcpay implements ObserverInterface
 
          // 訂單編號加密
         $encOrderId = $this->_encryptionsService->encrypt($orderId);
-        $this->_loggerInterface->debug('RedirectProcess Event $orderId:'. print_r($orderId,true));
-        $this->_loggerInterface->debug('RedirectProcess Event $encOrderId:'. print_r($encOrderId,true));
+        $this->_loggerInterface->debug('RedirectProcess Event $orderId:'. print_r($orderId, true));
+        $this->_loggerInterface->debug('RedirectProcess Event $encOrderId:'. print_r($encOrderId, true));
 
         // 判斷是否為綠界金流
-        $isEcpayPyment = $this->_paymentService->isEcpayPayment($paymentMethod) ;
+        $isEcpayPyment = $this->_paymentService->isEcpayPayment($paymentMethod);
 
         // 判斷是否為綠界物流
-        $isEcpayLogistic = $this->_logisticService->isEcpayLogistics($shippingMethod) ;
+        $isEcpayLogistic = $this->_logisticService->isEcpayLogistics($shippingMethod);
 
         // 判斷綠界的物流類型
         if ($isEcpayLogistic) {
@@ -111,7 +111,8 @@ class RedirectToEcpay implements ObserverInterface
 
             } elseif($cvsOrHomeCheck == 'home') {
                 // 宅配 判斷是否為綠界金流
-                if ($isEcpayPyment) $this->redirectToEcpay($encOrderId, 'payment');
+                if ($isEcpayPyment) { $this->redirectToEcpay($encOrderId, 'payment');
+                }
             }
 
         } else {
@@ -122,19 +123,19 @@ class RedirectToEcpay implements ObserverInterface
             } else {
                 // 判斷是否使用綠界發票
                 $invoiceType = $this->_orderService->getecpayInvoiceType($orderId);
-                $this->_loggerInterface->debug('RedirectProcess Event $invoiceType:'. print_r($invoiceType,true));
+                $this->_loggerInterface->debug('RedirectProcess Event $invoiceType:'. print_r($invoiceType, true));
 
                 if (in_array($invoiceType, [EcpayInvoice::ECPAY_INVOICE_TYPE_C, EcpayInvoice::ECPAY_INVOICE_TYPE_D, EcpayInvoice::ECPAY_INVOICE_TYPE_P])) {
                     // 判斷發票模組是否啟動
                     $ecpayEnableInvoice = $this->_mainService->isInvoiceModuleEnable();
-                    $this->_loggerInterface->debug('RedirectProcess ecpayEnableInvoice:'. print_r($ecpayEnableInvoice,true));
+                    $this->_loggerInterface->debug('RedirectProcess ecpayEnableInvoice:'. print_r($ecpayEnableInvoice, true));
 
                     // 判斷發票是否啟用自動開立
-                    $ecpayInvoiceAuto = $this->_mainService->getInvoiceConfig('enabled_invoice_auto') ;
-                    $this->_loggerInterface->debug('RedirectProcess ecpayInvoiceAuto:'. print_r($ecpayInvoiceAuto,true));
+                    $ecpayInvoiceAuto = $this->_mainService->getInvoiceConfig('enabled_invoice_auto');
+                    $this->_loggerInterface->debug('RedirectProcess ecpayInvoiceAuto:'. print_r($ecpayInvoiceAuto, true));
 
                     if ($ecpayEnableInvoice == 1 && $ecpayInvoiceAuto == 1) {
-                        $this->_orderService->setOrderData($orderId, 'ecpay_invoice_auto_tag', 1) ;
+                        $this->_orderService->setOrderData($orderId, 'ecpay_invoice_auto_tag', 1);
                     }
                 }
             }
@@ -154,7 +155,7 @@ class RedirectToEcpay implements ObserverInterface
         $redirectUrl = $this->_urlInterface->getUrl('ecpaygeneral/Page/RedirectToEcpay');
         $redirectUrl = $redirectUrl . '?id='. $encOrderId . '&type=' . $type;
 
-        $this->_loggerInterface->debug('RedirectProcess Event $redirectUrl:'. print_r($redirectUrl,true));
+        $this->_loggerInterface->debug('RedirectProcess Event $redirectUrl:'. print_r($redirectUrl, true));
         $this->_responseFactory->create()->setRedirect($redirectUrl)->sendResponse();
     }
 }
