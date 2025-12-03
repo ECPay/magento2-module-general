@@ -130,6 +130,11 @@
 "Barcode one","Barcode 1"
 "Barcode two","Barcode 2"
 "Barcode three","Barcode 3"
+"BNPL Trade No","BNPL Trade No"
+"BNPL Installment","BNPL Installment"
+"BNPL Provider","BNPL Provider"
+"URICH", "URICH"
+"ZINGALA", "ZINGALA"
 
 "Invalid number of periods.","Invalid number of periods."
 
@@ -190,7 +195,7 @@
 
 "The requested Payment Method is not available.","The requested Payment Method is not available."
 "ECpay TWQR Trade No : ","ECpay TWQR Trade No : "
-"Getting Code Result : (%s)%s, BNPL Trade No : %s, BNPL Installment : %s","Getting Code Result : (%s)%s, BNPL Trade No : %s, BNPL Installment : %s"
+"Getting Code Result : (%s)%s, BNPL Trade No : %s, BNPL Installment : %s, BNPL Provider : %s","Getting Code Result : (%s)%s, BNPL Trade No : %s, BNPL Installment : %s, BNPL Provider : %s"
 
 "Redirect To ECPay","Redirect To ECPay"
 

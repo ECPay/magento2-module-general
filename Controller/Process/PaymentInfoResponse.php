@@ -129,11 +129,6 @@ class PaymentInfoResponse extends Action implements CsrfAwareActionInterface
                     $responseResult = $this->_paymentService->getPaymentInfoResponse($orderId, $paymentInfo);
                     $this->_loggerInterface->debug('PaymentInfoResponse $responseResult:'. print_r($responseResult, true));
 
-                    // 更新訂單備註
-                    $status = false;
-                    $isVisibleOnFront = false;
-                    $this->_orderService->setOrderCommentForBack($orderId, $responseResult['comment'], $status, $isVisibleOnFront);
-
                     // 判斷取號結果
                     if ($responseResult['status'] === 1) {
                         // 相關資料庫回寫
@@ -155,7 +150,7 @@ class PaymentInfoResponse extends Action implements CsrfAwareActionInterface
                                 'payment_info'         => $this->_paymentService->getPaymentInfoTemplateValues($paymentInfo),
                             ];
                             $this->_loggerInterface->debug('PaymentInfoResponse $templateValues:'. print_r($templateValues, true));
-    
+
                             // 組合信件格式 包含寄件人、收件人、信件內容
                             $paymentMethod = strtolower($paymentType);
                             $mailData = [
@@ -172,6 +167,11 @@ class PaymentInfoResponse extends Action implements CsrfAwareActionInterface
                         $this->_orderService->setOrderState($orderId, Order::STATE_CANCELED);
                         $this->_orderService->setOrderStatus($orderId, Order::STATE_CANCELED);
                     }
+
+                    // 更新訂單備註
+                    $status = false;
+                    $isVisibleOnFront = false;
+                    $this->_orderService->setOrderCommentForBack($orderId, $responseResult['comment'], $status, $isVisibleOnFront);
                 }
             }
         }

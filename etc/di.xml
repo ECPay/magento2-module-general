@@ -14,4 +14,7 @@
         <plugin name="ecpayDisablePayment" type="Ecpay\General\Plugin\Model\Method\MethodAvailable" disabled="false" />
     </type>
 
+    <type name="Magento\OfflinePayments\Model\Cashondelivery">
+        <plugin name="ecpayCodLimit" type="Ecpay\General\Plugin\Model\Method\Cashondelivery" sortOrder="10"/>
+    </type>
 </config>

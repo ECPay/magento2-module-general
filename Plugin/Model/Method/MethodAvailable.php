@@ -59,27 +59,32 @@ class MethodAvailable
 
             switch ($shippingMethod) {
 
-            case 'ecpaylogisticcsvunimart_ecpaylogisticcsvunimart':
-                $group = 'ecpaylogisticcsvunimart' ;
-                break;
-            case 'ecpaylogisticcsvfamily_ecpaylogisticcsvfamily':
-                $group = 'ecpaylogisticcsvfamily' ;
-                break;
+                case 'ecpaylogisticcsvunimart_ecpaylogisticcsvunimart':
+                    $group = 'ecpaylogisticcsvunimart' ;
+                    break;
 
-            case 'ecpaylogisticcsvhilife_ecpaylogisticcsvhilife':
-                $group = 'ecpaylogisticcsvhilife' ;
-                break;
+                case 'ecpaylogisticcsvfamily_ecpaylogisticcsvfamily':
+                    $group = 'ecpaylogisticcsvfamily' ;
+                    break;
 
-            case 'ecpaylogisticcsvokmart_ecpaylogisticcsvokmart':
-                $group = 'ecpaylogisticcsvokmart' ;
-                break;
+                case 'ecpaylogisticcsvhilife_ecpaylogisticcsvhilife':
+                    $group = 'ecpaylogisticcsvhilife' ;
+                    break;
 
-            default:
-                $group = '' ;
-                break;
+                case 'ecpaylogisticcsvokmart_ecpaylogisticcsvokmart':
+                    $group = 'ecpaylogisticcsvokmart' ;
+                    break;
+
+                case 'ecpaylogistichometcat_ecpaylogistichometcat':
+                    $group = 'ecpaylogistichometcat' ;
+                    break;
+
+                default:
+                    $group = '' ;
+                    break;
             }
 
-            if(!empty($group)) {
+            if (!empty($group)) {
                 $cashOnDeliveryTag = ObjectManager::getInstance()
                     ->get(ScopeConfigInterface::class)
                     ->getValue(
@@ -89,12 +94,16 @@ class MethodAvailable
             }
         }
 
-        // 黑貓 中華郵政不允許貨到付款
-        if($shippingMethod == 'ecpaylogistichometcat_ecpaylogistichometcat'  
-            || $shippingMethod == 'ecpaylogistichomepost_ecpaylogistichomepost' 
-        ) {
+        // 中華郵政不允許貨到付款
+        if ($shippingMethod == 'ecpaylogistichomepost_ecpaylogistichomepost') {
             $cashOnDeliveryTag = 0;
-        }                   
+        }
+
+        // 黑貓貨到付款，金額不可超過20000元
+        $orderTotal = $quote->getGrandTotal();
+        if ($shippingMethod == 'ecpaylogistichometcat_ecpaylogistichometcat' && $orderTotal > 20000) {
+            $cashOnDeliveryTag = 0;
+        }
 
         // 過濾顯示金流
         foreach ($result as $key => $_result) {
@@ -118,7 +127,7 @@ class MethodAvailable
 
             foreach ($result as $key => $_result) {
 
-                if ($this->_paymentService->isEcpayPayment($_result->getCode()) 
+                if ($this->_paymentService->isEcpayPayment($_result->getCode())
                     || $_result->getCode() == 'cashondelivery'
                 ) {
 

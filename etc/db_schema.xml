@@ -4,7 +4,7 @@
     <table name="ecpay_logistic" resource="Ecpay_General::ecpay_logistic">
         <!-- 添加欄位 -->
         <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Entity ID"/>
-        
+
         <column xsi:type="int" name="order_id" comment="Order Id"/>
         <column xsi:type="varchar" name="merchant_trade_no" length="255" comment="MerchantTradeNo"/>
         <column xsi:type="int" name="rtn_code" comment="RtnCode"/>
@@ -15,7 +15,7 @@
         <column xsi:type="varchar" name="booking_note" length="50" comment="BookingNote"/>
         <column xsi:type="varchar" name="cvs_payment_no" length="50" comment="CVSPaymentNo"/>
         <column xsi:type="varchar" name="cvs_validation_no" length="50" comment="CVSValidationNo"/>
-        
+
         <!-- 添加外鍵、索引等其他約束 -->
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="entity_id"/>
@@ -41,7 +41,7 @@
     <table name="ecpay_payment_info" resource="Ecpay_General::ecpay_payment_info">
         <!-- 添加欄位 -->
         <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Entity ID"/>
-        
+
         <column xsi:type="int" name="order_id" comment="Order Id"/>
         <column xsi:type="varchar" name="merchant_id" length="10" comment="MerchantID"/>
         <column xsi:type="varchar" name="merchant_trade_no" length="255" comment="MerchantTradeNo"/>
@@ -63,6 +63,8 @@
         <column xsi:type="varchar" name="barcode1" length="50" comment="Barcode1"/>
         <column xsi:type="varchar" name="barcode2" length="50" comment="Barcode2"/>
         <column xsi:type="varchar" name="barcode3" length="50" comment="Barcode3"/>
+        <column xsi:type="varchar" name="bnpl_trade_no" length="64" comment="BNPLTradeNo"/>
+        <column xsi:type="varchar" name="bnpl_installment" length="2" comment="BNPLInstallment"/>
 
         <!-- 添加外鍵、索引等其他約束 -->
         <constraint xsi:type="primary" referenceId="PRIMARY">

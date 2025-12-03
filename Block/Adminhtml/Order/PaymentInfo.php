@@ -44,7 +44,7 @@ class PaymentInfo extends Info
      */
     public function isShowEcpayPaymentInfo()
     {
-        $allowedPaymentInfoList = ['ecpay_atm_gateway', 'ecpay_cvs_gateway', 'ecpay_barcode_gateway', 'ecpay_credit_installment_gateway'];
+        $allowedPaymentInfoList = ['ecpay_atm_gateway', 'ecpay_cvs_gateway', 'ecpay_barcode_gateway', 'ecpay_credit_installment_gateway', 'ecpay_bnpl_gateway'];
         $paymentMethod = $this->_orderService->getPaymentMethod($this->orderId);
 
         if (in_array($paymentMethod, $allowedPaymentInfoList)) {

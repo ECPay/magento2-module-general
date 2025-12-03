@@ -458,12 +458,15 @@ class PaymentService extends AbstractHelper
             );
                 break;
         case 'BNPL':
+            $paymentTypeParts = explode('_', $inputs['PaymentType']);
+            $bnplProvider = isset($paymentTypeParts[1]) ? $paymentTypeParts[1] : '';
             return sprintf(
                 $pattern,
                 $inputs['RtnCode'],
                 $inputs['RtnMsg'],
                 $inputs['BNPLTradeNo'],
                 $inputs['BNPLInstallment'],
+                __(strtoupper($bnplProvider))
             );
                 break;
         default:
@@ -496,7 +499,7 @@ class PaymentService extends AbstractHelper
                 $pattern = __('Getting Code Result : (%s)%s, Payment Deadline : %s, BARCODE 1 : %s, BARCODE 2 : %s, BARCODE 3 : %s');
                 break;
             case self::BNPL:
-                $pattern = __('Getting Code Result : (%s)%s, BNPL Trade No : %s, BNPL Installment : %s');
+                $pattern = __('Getting Code Result : (%s)%s, BNPL Trade No : %s, BNPL Installment : %s, BNPL Provider : %s');
                 break;
             }
 

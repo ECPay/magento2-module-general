@@ -131,6 +131,11 @@
 "Barcode one","第一段條碼"
 "Barcode two","第二段條碼"
 "Barcode three","第三段條碼"
+"BNPL Trade No","綠界無卡分期交易編號"
+"BNPL Installment","綠界無卡分期期數"
+"BNPL Provider","無卡分期服務商"
+"URICH", "裕富數位無卡分期"
+"ZINGALA", "中租銀角零卡"
 
 "Invalid number of periods.","請選擇期數"
 
@@ -191,7 +196,7 @@
 
 "The requested Payment Method is not available.","請求的付款方式不可用。"
 "ECpay TWQR Trade No : ","綠界TWQR行動支付交易編號 : "
-"Getting Code Result : (%s)%s, BNPL Trade No : %s, BNPL Installment : %s","取號結果 : (%s)%s, 綠界無卡分期交易編號 : %s, 綠界無卡分期期數 : %s"
+"Getting Code Result : (%s)%s, BNPL Trade No : %s, BNPL Installment : %s, BNPL Provider : %s","取號結果 : (%s)%s, 綠界無卡分期交易編號 : %s, 綠界無卡分期期數 : %s, 無卡分期服務商 : %s"
 
 "Redirect To ECPay","綠界轉導中"
 

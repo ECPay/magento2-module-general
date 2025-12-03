@@ -1137,6 +1137,32 @@ class OrderService extends AbstractHelper
                     ],
                 ];
                 break;
+            case 'ecpay_bnpl_gateway':
+                $paymentTypeParts = explode('_', $paymentInfoData['payment_type']);
+                $bnplProvider = isset($paymentTypeParts[1]) ? $paymentTypeParts[1] : '';
+                $paymentInfo = [];
+
+                if (!empty($paymentInfoData['bnpl_trade_no'])) {
+                    $paymentInfo[] = [
+                        'key' => __('BNPL Trade No'),
+                        'val' => $paymentInfoData['bnpl_trade_no']
+                    ];
+                }
+
+                if (!empty($paymentInfoData['bnpl_installment'])) {
+                    $paymentInfo[] = [
+                        'key' => __('BNPL Installment'),
+                        'val' => $paymentInfoData['bnpl_installment']
+                    ];
+                }
+
+                if (!empty($bnplProvider)) {
+                    $paymentInfo[] = [
+                        'key' => __('BNPL Provider'),
+                        'val' => __(strtoupper($bnplProvider))
+                    ];
+                }
+                break;
             }
         }
 

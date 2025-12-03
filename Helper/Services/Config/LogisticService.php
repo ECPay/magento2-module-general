@@ -1092,6 +1092,7 @@ class LogisticService extends AbstractHelper
                     'Specification'         => '0001',
                     'ScheduledPickupTime'   => '4',
                     'ScheduledDeliveryTime' => '4',
+                    'IsCollection'          => $isCollection,
                     'ServerReplyURL'        => $serverReplyURL,
                 ];
             }
@@ -1109,7 +1110,7 @@ class LogisticService extends AbstractHelper
             $this->_logger->debug('LogisticService inputLogisticOrder:'. print_r($inputLogisticOrder, true));
             $this->_logger->debug('LogisticService response:'. print_r($response, true));
 
-            if (isset($response['RtnCode']) 
+            if (isset($response['RtnCode'])
                 && ( $response['RtnCode'] == 300 || $response['RtnCode'] == 2001 )
             ) {
 
