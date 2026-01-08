@@ -15,7 +15,7 @@ class MainService extends AbstractHelper
     /**
      * 購物車開發版本
      */
-    public const CART_VERSION = 'v2.4.3-p3';
+    public const CART_VERSION = 'v2.4';
 
     public function getConfigValue($field, $storeId = null)
     {

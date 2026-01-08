@@ -20,6 +20,7 @@ use Ecpay\General\Helper\Services\Config\PaymentService;
 use Ecpay\General\Helper\Foundation\EncryptionsHelper;
 use Ecpay\General\Helper\Foundation\GeneralHelper;
 use Ecpay\General\Model\EcpayPaymentInfoFactory;
+use Magento\Framework\Controller\ResultFactory;
 
 class PaymentInfoResponse extends Action implements CsrfAwareActionInterface
 {
@@ -176,7 +177,8 @@ class PaymentInfoResponse extends Action implements CsrfAwareActionInterface
             }
         }
 
-        return '1|OK';
+        $result->setContents('1|OK');
+        return $result;
     }
 
     /**

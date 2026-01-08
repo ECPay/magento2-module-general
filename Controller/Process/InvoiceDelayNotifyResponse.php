@@ -20,6 +20,7 @@ use Ecpay\General\Helper\Services\Config\PaymentService;
 use Ecpay\Sdk\Factories\Factory;
 use Ecpay\Sdk\Exceptions\RtnException;
 use Ecpay\Sdk\Response\VerifiedArrayResponse;
+use Magento\Framework\Controller\ResultFactory;
 
 class InvoiceDelayNotifyResponse extends Action implements CsrfAwareActionInterface
 {
@@ -69,6 +70,9 @@ class InvoiceDelayNotifyResponse extends Action implements CsrfAwareActionInterf
         $invoiceInfo = $this->_requestInterface->getPostValue();
         $this->_loggerInterface->debug('InvoiceDelayNotifyResponse invoiceInfo:'. print_r($invoiceInfo, true));
 
+        /** @var \Magento\Framework\Controller\Result\Raw $result */
+        $result = $this->resultFactory->create(ResultFactory::TYPE_RAW);
+
         // 利用od_sob解析出訂單編號
         if(isset($invoiceInfo['od_sob']) && isset($invoiceInfo['tsr']) && !empty($invoiceInfo['tsr'])) {
 
@@ -96,11 +100,13 @@ class InvoiceDelayNotifyResponse extends Action implements CsrfAwareActionInterf
                 $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront);
 
                 // 回傳綠界成功狀態
-                return '1|OK';  
+                $result->setContents('1|OK');
+                return $result;
             }
             
         } else {
-            return '0|Fail';
+            $result->setContents('0|Fail');
+            return $result;
         }
     }
 

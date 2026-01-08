@@ -9,7 +9,8 @@
     <p id="loading-text"><?= $block->escapeHtml(__('Redirect To ECPay')) ?></p>
 </div>
 
-<?php if ($block->getFormHtml()): ?>
-    <!-- 綠界安全表單輸出 -->
-    <?= /* @noEscape */ $block->getFormHtml() ?>
+<?php $formHtml = $block->getFormHtml(); ?>
+
+<?php if (!empty($formHtml)): ?>
+    <?= /* @noEscape */ $formHtml ?>
 <?php endif; ?>

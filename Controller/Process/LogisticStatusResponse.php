@@ -20,6 +20,7 @@ use Ecpay\General\Helper\Services\Config\PaymentService;
 use Ecpay\Sdk\Factories\Factory;
 use Ecpay\Sdk\Exceptions\RtnException;
 use Ecpay\Sdk\Response\VerifiedArrayResponse;
+use Magento\Framework\Controller\ResultFactory;
 
 class LogisticStatusResponse extends Action implements CsrfAwareActionInterface
 {
@@ -65,6 +66,10 @@ class LogisticStatusResponse extends Action implements CsrfAwareActionInterface
 
     public function execute()
     {
+        
+        /** @var \Magento\Framework\Controller\Result\Raw $result */
+        $result = $this->resultFactory->create(ResultFactory::TYPE_RAW);
+        
         // 取出是否為測試模式
         $logisticStage = $this->_mainService->getLogisticConfig('enabled_logistic_stage');
         $this->_loggerInterface->debug('LogisticStatusResponse logisticStage:'. print_r($logisticStage, true));
@@ -130,7 +135,8 @@ class LogisticStatusResponse extends Action implements CsrfAwareActionInterface
 
                     $this->_orderService->setOrderCommentForBack($orderId, $comment, $status, $isVisibleOnFront);
 
-                    return '1|OK';
+                    $result->setContents('1|OK');
+                    return $result;
                 }  
             }
 
