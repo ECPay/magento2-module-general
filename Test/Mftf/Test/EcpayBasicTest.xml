@@ -11,13 +11,16 @@
             <group value="Ecpay_General"/>
         </annotations>
 
-        <amOnPage url="backend"/>
+        <before>
+            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+        </before>
 
-        <fillField selector="{{AdminLoginUsernameField}}" userInput="{{AdminUsername}}"/>
-        <fillField selector="{{AdminLoginPasswordField}}" userInput="{{AdminPassword}}"/>
-        <click selector="{{AdminLoginButton}}"/>
-        <waitForPageLoad/>
+        <after>
+            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+        </after>
 
-        <see element="{{AdminDashboardPageTitleBlock}}"/>
+        <!-- Verify admin dashboard is accessible -->
+        <waitForPageLoad stepKey="waitForDashboardLoad"/>
+        <see stepKey="seeDashboardTitle" text="Dashboard"/>
     </test>
 </tests>
