@@ -1,7 +1,7 @@
 {
     "name": "greenworld/magento2-module-general",
     "type": "magento2-module",
-    "version": "2.4.2512110",
+    "version": "2.4.2601160",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
