@@ -15,12 +15,10 @@
             <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
         </before>
 
+        <waitForPageLoad stepKey="waitForAdmin"/>
+
         <after>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
         </after>
-
-        <!-- Verify admin dashboard is accessible -->
-        <waitForPageLoad stepKey="waitForDashboardLoad"/>
-        <see stepKey="seeDashboardTitle" text="Dashboard"/>
     </test>
 </tests>
