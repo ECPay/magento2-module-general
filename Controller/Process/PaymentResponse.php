@@ -105,6 +105,7 @@ class PaymentResponse extends Action implements CsrfAwareActionInterface
             $checkMacValue = $this->_paymentService->checkMacValue($accountInfo, $paymentInfo);
             $orderCurrencyCode = $this->_orderService->getOrderCurrencyCode($orderId);
             $orderTotal = (!$orderCurrencyCode) ? $this->_orderService->getGrandTotal($orderId) : $this->_orderService->getBaseGrandTotal($orderId);
+            $orderTotal = (int) ceil($orderTotal);
             if (!$this->_paymentService->validAmount($paymentInfo['TradeAmt'], $orderTotal) || !$checkMacValue) {
                 $this->_loggerInterface->debug('PaymentResponse $paymentInfo.TradeAmt:'. print_r($paymentInfo['TradeAmt'], true));
                 $this->_loggerInterface->debug('PaymentResponse $orderTotal:'. print_r($orderTotal, true));

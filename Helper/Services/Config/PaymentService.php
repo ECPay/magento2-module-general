@@ -65,6 +65,11 @@ class PaymentService extends AbstractHelper
     public const WEIXIN = 'WeiXin';
 
     /**
+     * JKOPAY
+     */
+    public const JKOPAY = 'DigitalPayment_Jkopay';
+
+    /**
      * 付款成功代碼
      */
     public const PAYMENT_SUCCESS_CODE = 1;
@@ -212,6 +217,10 @@ class PaymentService extends AbstractHelper
         case self::TWQR:
             $send['NeedExtraPaidInfo'] = 'Y';
             break;
+        case self::JKOPAY:
+            $send['ChoosePayment'] = explode('_', $send['ChoosePayment'])[0] ?? 'DigitalPayment';
+            $send['ChooseSubPayment'] = explode('_', $send['ChoosePayment'])[1] ?? 'Jkopay';
+            break;
         }
         return $send;
     }
@@ -324,6 +333,9 @@ class PaymentService extends AbstractHelper
         case 'ecpay_weixin_gateway':
             $choosePayment = self::WEIXIN ;
             break;
+        case 'ecpay_jkopay_gateway':
+            $choosePayment = self::JKOPAY ;
+            break;
         }
 
         return $choosePayment ;
@@ -389,7 +401,8 @@ class PaymentService extends AbstractHelper
             'ecpay_applepay_gateway',
             'ecpay_twqr_gateway',
             'ecpay_bnpl_gateway',
-            'ecpay_weixin_gateway'
+            'ecpay_weixin_gateway',
+            'ecpay_jkopay_gateway'
         ];
     }
 
@@ -567,7 +580,13 @@ class PaymentService extends AbstractHelper
         }
 
         $pieces = explode('_', $paymentType);
-        return $this->getSdkPaymentMethod($pieces[0]);
+        $type = $pieces[0] ?? '';
+
+        if ($paymentType == 'DigitalPayment_Jkopay' || $paymentType == 'DigitalPayment_IPASS' || $paymentType == 'Flexible_Installment') {
+            $type = $pieces[1];
+        }
+
+        return $this->getSdkPaymentMethod($type);
     }
 
     /**
@@ -714,6 +733,7 @@ class PaymentService extends AbstractHelper
             $sdkPayment = self::ALL;
             break;
         case 'credit':
+        case 'installment':
             $sdkPayment = self::CREDIT;
             break;
         case 'webatm':
@@ -739,6 +759,9 @@ class PaymentService extends AbstractHelper
             break;
         case 'weixin':
             $sdkPayment = self::WEIXIN;
+            break;
+        case 'jkopay':
+            $sdkPayment = self::JKOPAY;
             break;
         default:
             $sdkPayment = '';
