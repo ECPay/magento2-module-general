@@ -70,6 +70,11 @@ class PaymentService extends AbstractHelper
     public const JKOPAY = 'DigitalPayment_Jkopay';
 
     /**
+     * IPASS
+     */
+    public const IPASS = 'DigitalPayment_iPASS';
+
+    /**
      * 付款成功代碼
      */
     public const PAYMENT_SUCCESS_CODE = 1;
@@ -221,6 +226,10 @@ class PaymentService extends AbstractHelper
             $send['ChoosePayment'] = explode('_', $send['ChoosePayment'])[0] ?? 'DigitalPayment';
             $send['ChooseSubPayment'] = explode('_', $send['ChoosePayment'])[1] ?? 'Jkopay';
             break;
+        case self::IPASS:
+            $send['ChoosePayment'] = explode('_', $send['ChoosePayment'])[0] ?? 'DigitalPayment';
+            $send['ChooseSubPayment'] = explode('_', $send['ChoosePayment'])[1] ?? 'iPASS';
+            break;
         }
         return $send;
     }
@@ -336,6 +345,9 @@ class PaymentService extends AbstractHelper
         case 'ecpay_jkopay_gateway':
             $choosePayment = self::JKOPAY ;
             break;
+        case 'ecpay_ipass_gateway':
+            $choosePayment = self::IPASS ;
+            break;
         }
 
         return $choosePayment ;
@@ -402,7 +414,8 @@ class PaymentService extends AbstractHelper
             'ecpay_twqr_gateway',
             'ecpay_bnpl_gateway',
             'ecpay_weixin_gateway',
-            'ecpay_jkopay_gateway'
+            'ecpay_jkopay_gateway',
+            'ecpay_ipass_gateway'
         ];
     }
 
@@ -762,6 +775,9 @@ class PaymentService extends AbstractHelper
             break;
         case 'jkopay':
             $sdkPayment = self::JKOPAY;
+            break;
+        case 'ipass':
+            $sdkPayment = self::IPASS;
             break;
         default:
             $sdkPayment = '';
