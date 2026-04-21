@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
     <!-- ecpay_logistic -->
-    <table name="ecpay_logistic" resource="Ecpay_General::ecpay_logistic">
+    <table name="ecpay_logistic" resource="default" engine="innodb">
         <!-- 添加欄位 -->
         <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Entity ID"/>
 
@@ -23,7 +23,7 @@
     </table>
 
     <!-- sales_order -->
-    <table name="sales_order" resource="Ecpay_General::sales_order">
+    <table name="sales_order" resource="default">
         <!-- 添加 Logistic 欄位 -->
         <column xsi:type="varchar" name="ecpay_logistic_cvs_store_id" length="10" comment="CVSStoreID" nullable="true"/>
         <column xsi:type="varchar" name="ecpay_logistic_cvs_store_name" length="10" comment="CVSStoreName" nullable="true"/>
@@ -38,7 +38,7 @@
     </table>
 
      <!-- ecpay_payment_info -->
-    <table name="ecpay_payment_info" resource="Ecpay_General::ecpay_payment_info">
+    <table name="ecpay_payment_info" resource="default" engine="innodb">
         <!-- 添加欄位 -->
         <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Entity ID"/>
 
